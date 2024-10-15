@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Personal</title>
+        <style>
+            body {
+                border-radius:10px;
+                background: white;
+                padding:4px;
+            }
+            label {
+                width:200px;
+                display:inline-block;
+                margin:10px;
+                font-style: italic;
+            }
+            #header {
+                text-align: right;
+                padding-right: 10px;
+            }
+            h1 {
+                text-align: center;
+                font-style: italic;
+                color:red;
+            }
+            h3 {
+                padding-right: 200px;
+                font-style: italic;
+                color: green;
+            }
+            #form {
+                text-align: center;
+                border-radius:10px;
+                background-color:lightblue ;
+                width: 550px;
+                height: 300px;
+                align-items: center;
+                margin-inline: auto;
+            }
+            #footer {
+                text-align: center;
+            }
+            #anchor1 {
+                text-align:right;
+                display:block;
+                color: green;
+                padding-right: 20px;
+                padding-top: 20px;
+                font-style: italic;
+                font-size: 20px;
+              }
+            #anchor2 {
+                text-align:center;
+                display:block;
+                color: rgb(255, 145, 0);
+                font-style: italic;
+                font-size: 20px;
+              }
+            #image {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width:100%;
+                padding-left:50px;
+            }
+            button {
+                width: 90px;
+                height:30px;
+                border-radius: 5px;
+                background-color: grey;
+                color: white;
+            }
+            #msg {
+                font-style: solid italic;
+                font-size:25px;
+                color:red;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="header">
+        </div>
+        <div id="main">
+            <h1>NewGen Household Services</h1>
+            <form action="/login" id="form" method="POST">
+                    <a id="anchor1" href="/professionalsignup">Register as professional</a>
+                    <br><br>
+                    <div>
+                        <label for="EmailId">Registered Email ID:</label>
+                        <input type="email" id="EmailId" name="user_email" placeholder="example@abc.com">
+                    </div>
+
+                    <div>
+                        <label for="Password" >Password:</label>
+                        <input type="password" id="Password" name="user_password">
+                    </div>
+                    <br>
+                    <div>
+                       <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to login">Login</button>
+                    </div>
+                    <br>
+                    <div>
+                        <p style="font-style:italic;">Dont you have account ?<a id="anchor2" href="/customersignup">Create Customer Account</a></p>
+                    </div>
+                    <div id="msg">{{msg}}</div>
+            </form>
+            <br>
+            <h3>Best Household Services</h3>
+            <div id="image">
+               <img style="border: 1px solid black; border-radius: 5px;" src="{{ url_for('static',filename='/images/cleaning.PNG') }}" alt="Image-2" height="200px" width="200px"/>
+               <img style="border: 1px solid black; border-radius: 5px;" src="{{ url_for('static',filename='/images/sofadrycleaning.PNG') }}" alt="Image-2" height="200px" width="200px"/> 
+               <img style="border: 1px solid black; border-radius: 5px;" src="/static/images/bathroomcleaning.PNG" alt="Image-3" height="200px" width="200px"/>
+               <img style="border: 1px solid black; border-radius: 5px;" src="/static/images/plumbingservices.PNG" alt="Image-4" height="200px" width="200px"/>
+               <img style="border: 1px solid black; border-radius: 5px;" src="/static/images/acservicing.PNG" alt="Image-5" height="200px" width="200px"/>
+               <img style="border: 1px solid black; border-radius: 5px;" src="/static/images/paintingservice.PNG" alt="Image-6" height="200px" width="200px"/>  
+            </div>
+        </div>
+        <div id="footer">
+            <h5>City Household Services | Copyright 2024</h5>
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            text-decoration: none;
+        }
+        .navbar {
+            background-color: lightblue;
+            padding-right: 15px;
+            padding-left: 15px;
+            border-radius: 5px;
+        }
+        ul li{
+            vertical-align: middle;            
+        }
+        .navdiv {
+            display:flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 22px;
+            color: red;
+            font-style: italic;
+        }
+        li {
+            list-style: none;
+            display: inline;
+        }
+        li a {
+            color: green;
+            font-size: 16px;
+            font-style: italic;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        #anchor1 {
+            border:1px
+            font-size: 22px;
+            font-style:bold italic;
+            text-align: center;
+            margin-left: 810px;
+            color: white;
+        }
+
+        table ,th, td {
+            text-align: center;
+            font-style: italic;
+            width:900px;
+            margin-left: 50px;
+            border-radius: 10px;
+            border-color: blue;
+            border: 1px solid black;
+            border-collapse: collapse ;
+        }
+    
+        #service {
+            margin-left: 50px;
+            margin-top: 50px;
+            font-style: italic;
+            font-size: 20px;
+            color: blue;
+        }
+        #professional {
+            margin-left: 50px;
+            font-style: italic;
+            font-size: 20px;
+            color: blue;
+        }
+        #servicerequest {
+            margin-left: 50px;
+            font-style: italic;
+            font-size: 20px;
+            color: blue;
+        }
+
+        button {
+            width: 80px;
+            border-radius: 5px;
+            background-color: grey;
+            color: white;
+        }
+
+        #act {
+            color:red;
+        }
+        a.button {
+            padding: 1px 6px;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color: black;
+            background-color: gray;
+            text-decoration: none;
+            font-size:18px
+            
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="header">
+        <nav class="navbar">
+            <div class="navdiv">
+                <div class="logo">Welcome {{admin_name}} (Admin Dashboard)</div>
+                <ul>
+                    <li><a href="/admindashboard">Home |</a></li>
+                    <li><a href="/adminsearch">Search |</a></li>
+                    <li><a href="/adminsummary">Summary |</a></li>
+                    <li><a href="/login">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div id="main">
+        <div id="service">Services Offered (..admin may add more)</div>
+        <br>
+        <table id = "service-table">
+            <thead id="th">
+                <tr>
+                    <th>ID</th>
+                    <th>Service Name</th>
+                    <th>Descriptin</th>
+                    <th>Base Price</th>
+                    <th>Time required</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="td">
+                {% for entry in servicename %}
+                <tr>
+                    <td><a href="/viewservice/{{entry.id}}">{{entry["id"]}}</a></td>
+                    <td>{{entry["servicename"]}}</td>
+                    <td>{{entry["description"]}}</td>
+                    <td>{{entry["baseprice"]}}</td>
+                    <td>{{entry["time_required"]}}</td>
+                    <td>
+                        <a href="/viewservice/{{entry.id}}/edit" type="button">Edit /</a>
+                        <a href="/viewservice/{{entry.id}}/delete" type="button">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            <tbody>
+          </table>
+          <br>
+          <div id="nservice">
+            <a  id ="anchor1" class="button" href="/addservice">Add New Service</a>
+          </div>
+          <br><br>
+          <div id="professional">Service Professional Registration Requests...(..pending for admin approval)</div>
+          <br>
+          <table id = "professionals-table">
+            <thead id="th">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Experience</th>
+                    <th>Service Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="td">
+                {% for entry in professional %}
+                <tr>
+                    <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}</a></td>
+                    <td>{{entry["full_name"]}}</td>
+                    <td>{{entry["experience"]}}</td>
+                    <td>{{entry["service_name"]}}</td>
+                    <td>
+                        <a href="/viewprofessional/{{entry.id}}/approve" type="button">Approve /</a>
+                        <a href="/viewprofessional/{{entry.id}}/reject" type="button">Reject /</a>
+                        <a href="/viewprofessional/{{entry.id}}/delete" type="button">Delete</a>
+                    </td>
+                </tr>
+        
+                {% endfor %}
+            <tbody>
+          </table>
+          <br><br>
+          <div id="servicerequest">Customer's Service Requests</div>
+          <br>
+          <table id = "servicerequests-table">
+            <thead id="th">
+                <tr>
+                    <th>ID</th>
+                    <th>Assigned Professional</th>
+                    <th>Requested Date</th>
+                    <th>Status(Requested/Accepted/Closed)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="td">
+                {% for entry in servicename %}
+                <tr>
+                    <td>{{entry["id"]}}</td>
+                    <td>{{entry["servicename"]}}</td>
+                    <td>{{entry["description"]}}</td>
+                    <td>{{entry["baseprice"]}}</td>
+                    <td>Edit/Delete</td>
+                </tr>
+                {% endfor %}
+            <tbody>
+          </table>
+    </div>
+    <div id="footer">
+
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+        body {
+            background-color: white;
+            border-radius: 10px;
+            padding: 4px;
+        }
+        label {
+            width:200px;
+            display:inline-block;
+            margin:10px;
+            font-style: italic;
+            }
+        h1 {
+            text-align: center;
+            color: red;
+            font-style: italic;
+        }
+        #form {
+            text-align: center;
+            border-radius:10px;
+            background-color:lightblue ;
+            width: 500px;
+            height: 550px;
+            align-items: center;
+            margin-inline: auto;
+        }
+        #anchor1 {
+            color: green;
+            font-style: italic;
+        }
+        #servicename {
+            font-style: italic;
+            width:177px;
+            text-align: auto;
+        }
+        button {
+            border-radius: 5px;
+            background-color: grey;
+            color: white;
+            width: 100px;
+            height: 30px;
+        }
+
+        #msg {
+            font-style:solid italic;
+            color:red;
+        }
+        #drp1 {
+            margin-left:-5px;
+        }
+        #drp {
+            margin-left:-80px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+    </div>
+    <div id="main">
+        <form action="/professionalsignup" id="form" method="POST">
+            <br>
+            <h1> Service Professional Signup</h1>
+            <div>
+                <label for="email">Email ID (Username):</label>
+                <input type="email" id="email" name="s_email">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="s_password">
+            </div>
+            <div>
+                <label for="name">Fullname:</label>
+                <input type="text" id="name" name="s_fullname">
+            </div>
+            <div>
+                <label id="drp1" for="pservicename">Service Name:</label>
+                <select name="ps_name" id="pservicename" row="4" cols="21">
+                    {% for s_name in pservicename %}
+                    <option value="{{s_name.servicename}}">{{s_name.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="experience">Experience (in yrs):</label>
+                <input type="number" id="experience" name="s_exp">
+            </div>
+            <br>
+            <div>
+                <label for="address">Address:</label>
+                <textarea id="textarea" name="s_address" row="4" cols="21"></textarea>
+            </div>
+            <div>
+                <label id="drp" for="customer_location">Location:</label>
+                <select name="customer_location" id="customer_location" row="16" cols="40">
+                    {% for entry in servicename %}
+                    <option value="{{entry.location}}">{{entry.location}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="s_pincode">
+            </div>
+            <br>
+            <div>
+                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to register">Register</button>
+             </div>
+             <br>
+             <div>
+                <a style="font-size:17px;" id="anchor1" href="/login">Go Back</a>
+             </div>
+             <div id="msg">
+                {{msg}}
+             </div>
+
+        </form>
+
+    </div>
+    <div id="footer">
+
+    </div>
+    
+</body>
+</html>

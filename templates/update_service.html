@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1px;
+        }
+        h1 {
+            text-align: center;
+            color: red;
+            font-style: italic;
+        }
+        label {
+            width:200px;
+            display:inline-block;
+            margin:10px;
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 500;
+            }
+        #form {
+            text-align: center;
+            border-radius:10px;
+            background-color:lightblue ;
+            width: 500px;
+            height: 410px;
+            align-items: center;
+            margin-inline: auto;
+        }
+        button {
+            border-radius: 5px;
+            margin-left: 10px;
+            background-color: grey;
+            color: white;
+            font-size: 18px;
+        }
+        a.button {
+            padding: 1px 6px;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color: white;
+            background-color: grey;
+            text-decoration: none;
+            font-size:20px
+        }
+        #drp {
+            margin-left:-50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+
+    </div>
+    <div id="main">
+        <form action="/editservice" id="form" method="POST">
+            <br>
+            <h1>Update Service (Id :{{id}})</h1>
+            <div></div>
+            <div>
+                <label for="service_id">Id:</label>
+                <input type="text" id="service_id" name="service_id">
+            </div>
+            <div>
+                <label for="service_name">Service Name:</label>
+                <input type="text" id="service_name" name="service_name">
+            </div>
+            <div>
+                <label id="drp" for="servicetype">Service Type:</label>
+                <select name="service_type" id="servicetype" row="16" cols="40">
+                    <option value="carpainter">Carpainter</option>
+                    <option value="cleaning">House cleaning</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="acservicing">A.C.Servicing</option>
+                    <option value="painting">Home Painting</option>
+                    <option value="electrician">Electrician</option>
+                    <option value="saloon">Saloon</option>
+                    <option value="gardening">Gardening</option>
+                    <option value="new">New</option>
+                </select>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" row="8" cols="21"></textarea>
+            </div>
+            <div>
+                <label for="base_price">Base Price:</label>
+                <input type="text" id="base_price" name="base_price">
+            </div>
+            <div>
+                <label for="time_required">Time Required:</label>
+                <input type="text" id="time_required" name="time_required">
+            </div>
+            <br>
+            <div>
+                <button type="submit" value="add">Update</button>
+                <a href="/admindashboard" class="button">Cancel</a>
+            </div>
+            <div>{{msg}}</div>
+
+        </form>
+
+
+    </div>
+    <div id="footer">
+
+    </div>
+
+</body>
+</html>
