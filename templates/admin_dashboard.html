@@ -47,7 +47,6 @@
             margin-left: 810px;
             color: white;
         }
-
         table ,th, td {
             text-align: center;
             font-style: italic;
@@ -162,6 +161,7 @@
                     <th>Experience</th>
                     <th>Service Name</th>
                     <th>Action</th>
+                    <th>CV</th>
                 </tr>
             </thead>
             <tbody id="td">
@@ -176,6 +176,7 @@
                         <a href="/viewprofessional/{{entry.id}}/reject" type="button">Reject /</a>
                         <a href="/viewprofessional/{{entry.id}}/delete" type="button">Delete</a>
                     </td>
+                    <td><a href="\MADI Project\cv.pdf" download="cv.pdf">Download</a></td>
                 </tr>
         
                 {% endfor %}

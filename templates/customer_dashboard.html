@@ -112,13 +112,13 @@
     </div>
     <div id="main">
         <div class="div1">
-            <p style="color:black;">Available Household services</p>
+            <p style="color:black;">Available Household Services</p>
             <div id="div2">
                 {% for entry in service %}
                 <button class="button"><a href="/{{entry.service_type}}/{{customer_id}}" >{{entry.service_type}}</a></button>
                 {% endfor %}
             </div>
-            <p style="font-size:17px;">Click on the box to proceed..</p>
+            <p style="font-size:17px;">Click on any of above box to book the service..</p>
             <br>
         </div>
         <div class="table">

@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
+from fileinput import filename
 #import datetime
 
 from datetime import date
@@ -116,6 +117,8 @@ def serviceprofessional_signup():
     servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
     #pservicename=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
     if request.method=='POST':
+        f = request.files['file'] 
+        f.save(f.filename)
         email=request.form.get("s_email")
         pwd=request.form.get("s_password")
         fname=request.form.get("s_fullname")

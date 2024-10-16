@@ -34,10 +34,11 @@
             color: green;
             font-style: italic;
         }
-        #servicename {
+        #pservicename {
             font-style: italic;
             width:177px;
             text-align: auto;
+            margin-left:18px;
         }
         button {
             border-radius: 5px;
@@ -63,7 +64,7 @@
     <div id="header">
     </div>
     <div id="main">
-        <form action="/professionalsignup" id="form" method="POST">
+        <form action="/professionalsignup" id="form" method="POST" enctype = "multipart/form-data">
             <br>
             <h1> Service Professional Signup</h1>
             <div>
@@ -106,6 +107,9 @@
             <div>
                 <label for="pincode">Pincode:</label>
                 <input type="text" id="pincode" name="s_pincode">
+            </div>
+            <div>
+                    <input style="margin-left:200px;" type = "file" name = "file" />
             </div>
             <br>
             <div>
