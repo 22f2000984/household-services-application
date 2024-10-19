@@ -80,14 +80,14 @@
         }
         h1,h2 {
             font-style: italic;
-            color:blue;
+            color:blueviolet;
         }
         
         table, th, td{
             text-align: center;
             font-style: italic;
-            width:1000px;
-            margin-left: 50px;
+            width:900px;
+            margin-left: 80px;
             border-radius: 20px;
             border: 1px solid black;
             border-collapse: collapse ;
@@ -112,20 +112,19 @@
     </div>
     <div id="main">
         <div class="div1">
-            <p style="color:black;">Available Household Services</p>
+            <p style="color:black;font-size:25px;">Available Household Services</p>
+            
             <div id="div2">
                 {% for entry in service %}
                 <button class="button"><a href="/{{entry.service_type}}/{{customer_id}}" >{{entry.service_type}}</a></button>
                 {% endfor %}
             </div>
-            <p style="font-size:17px;">Click on any of above box to book the service..</p>
+            <p style="font-size:17px;">Click on above box to book the service..</p>
             <br>
         </div>
         <div class="table">
-            <br><br>
-            <h2>Service History</h2>
-            <br><br>
-            {{customer_id}}
+            <br>
+            <h2>Customer Service History {{customer_id}}</h2>
             <table>
                 <thead id="th">
                     <tr>

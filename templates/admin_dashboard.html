@@ -98,6 +98,10 @@
             font-size:18px
             
         }
+        #pdfimg {
+            width: 20px;
+            height: 20px;
+        }
 
     </style>
 
@@ -176,7 +180,7 @@
                         <a href="/viewprofessional/{{entry.id}}/reject" type="button">Reject /</a>
                         <a href="/viewprofessional/{{entry.id}}/delete" type="button">Delete</a>
                     </td>
-                    <td><a href="\MADI Project\cv.pdf" download="cv.pdf">Download</a></td>
+                    <td><a href="\MADI Project\cv.pdf" download="cv.pdf"><img src="/static/images/pdficon.PNG" alt="Image-5" height="20px" width="20px">Download</a></td>
                 </tr>
         
                 {% endfor %}
