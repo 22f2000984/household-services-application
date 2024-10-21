@@ -1,0 +1,181 @@
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch master
+Your branch is ahead of 'master/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>ps -ef
+'ps' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>ps
+'ps' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>git remote add origin https://github.com/22f2000984/household-services-application.git
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git branch -M main
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git push -u origin-main
+fatal: 'origin-main' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git config --global user.name "22f2000984"
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git config --global user.email "22f2000984@ds.study.iitm.ac.in"
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>git init
+Reinitialized existing Git repository in C:/Users/Hemendra Sharma/beginner/MADI Project/.git/
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is ahead of 'master/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>code .
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is ahead of 'master/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is ahead of 'master/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git log
+commit 0d3963dbefc39598ee2656a4d46476860e483a41 (HEAD -> main)
+Author: 22f2000984 <22f2000984ds.study.iitm.ac.in>
+Date:   Tue Oct 15 17:15:23 2024 +0530
+
+    Initial pushinh cde into git repository
+
+commit 842e6063c4d079c2f00640708a28183fa0746da5 (master/master)
+Author: 22f2000984 <22f2000984@ds.study.iitm.ac.in>
+Date:   Tue Oct 15 15:54:29 2024 +0530
+
+    First coode commit into git repository
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git branch
+* main
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git remote add origin https://github.com/22f2000984/houshold-services-application.git
+error: remote origin already exists.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git push -u origin main
+Enumerating objects: 8556, done.
+Counting objects: 100% (8556/8556), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (5836/5836), done.
+Writing objects: 100% (8556/8556), 47.96 MiB | 566.00 KiB/s, done.
+Total 8556 (delta 2654), reused 8554 (delta 2653), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2654/2654), done.
+To https://github.com/22f2000984/household-services-application.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git log
+commit 0d3963dbefc39598ee2656a4d46476860e483a41 (HEAD -> main, origin/main)
+Author: 22f2000984 <22f2000984ds.study.iitm.ac.in>
+Date:   Tue Oct 15 17:15:23 2024 +0530
+
+    Initial pushinh cde into git repository
+
+commit 842e6063c4d079c2f00640708a28183fa0746da5 (master/master)
+Author: 22f2000984 <22f2000984@ds.study.iitm.ac.in>
+Date:   Tue Oct 15 15:54:29 2024 +0530
+
+    First coode commit into git repository
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>pwd
+'pwd' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   app.py
+        modified:   instance/household.sqlite3
+        modified:   templates/admin_dashboard.html
+        modified:   templates/customer_dashboard.html
+        modified:   templates/professional_signup.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        backup_professionalsignup.txt
+        cv.pdf
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git add .
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git commit -m "changes done on 16-10-2024"
+[main d8b138b] changes done on 16-10-2024
+ 7 files changed, 13 insertions(+), 5 deletions(-)
+ create mode 100644 backup_professionalsignup.txt
+ create mode 100644 cv.pdf
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git remote add origin https://github.com/22f2000984/houshold-services-application.git
+error: remote origin already exists.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git push -u origin-main
+fatal: 'origin-main' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>git push -u origin main
+Enumerating objects: 18, done.
+Counting objects: 100% (18/18), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (9/9), done.
+Writing objects: 100% (11/11), 565.76 KiB | 13.47 MiB/s, done.
+Total 11 (delta 7), reused 1 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (7/7), completed with 6 local objects.
+To https://github.com/22f2000984/household-services-application.git
+   0d3963d..d8b138b  main -> main
+branch 'main' set up to track 'origin/main'.
+
+C:\Users\Hemendra Sharma\beginner\MADI Project>

@@ -38,6 +38,43 @@
             margin-right: 5px;
             font-weight: bold;
         }
+        table ,th, td {
+            text-align: center;
+            font-style: italic;
+            width:900px;
+            margin-left: 50px;
+            border-radius: 10px;
+            border-color: blue;
+            border: 1px solid black;
+            border-collapse: collapse ;
+        }
+        h2 {
+            margin-left: 50px;
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 20px;
+            color: blue;
+        }
+        #profile {
+            border:1px solid black;
+            border-radius: 10px;
+            width:150px;
+            text-align: center;
+            margin-left: 800px;
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 20px;
+            color:brown;
+        }
+        button {
+            padding: 1px 6px;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color: black;
+            background-color: gray;
+            text-decoration: none;
+            font-size:18px
+        }
 
     </style>
 
@@ -48,15 +85,115 @@
             <div class="navdiv">
                 <div class="logo">Welcome {{professional_name}} (Professional Dashboard)</div>
                 <ul>
-                    <li><a href="professionalhome.html">Home |</a></li>
+                    <li><a href="#">Home |</a></li>
                     <li><a href="professionalsearch.html">Search |</a></li>
                     <li><a href="professionalsummary.html">Summary |</a></li>
-                    <li><a href="index.html">Logout</a></li>
+                    <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     <div id="main">
+        {{professional_id}}
+        <div id="profile">
+            <p>Professional's details</p>
+            <button><a style="color:white;" href="/viewprofessionalprofile/{{professional_id}}">View</a></button>
+            <button><a style="color:white;" href="viewprofessional/{{professional_id}}/edit">Edit</a></button>
+            <p></p>
+        </div>
+        <div id="todayservicerequests">
+            <h2>Today's New Service Requests (Location-{{professional_location}})</h2>
+            <table id="today_service-request">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone Number</th>
+                        <th>Location(Picode)</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in cservice%}
+                    {% if  (entry.service_status=="requested" or entry.service_status=="rejected") and entry.location==professional_location %}
+                    <tr>
+                        <td>{{entry["id"]}}</td>
+                        <td>{{entry.customer_id}}</td>
+                        <td>9769494927</td>
+                        <td>{{entry.location}}</td>
+                        <td>{{entry.service_status}}</td>
+                        <td>
+                            <a href="/acceptcustomerservicerequests/{{professional_id}}/{{entry.id}}/accept">Accept /</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="todayservicerequests">
+            <br>
+            <h2>Today's Accepted Service Requests</h2>
+            <table id="today_service-request">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone Number</th>
+                        <th>Location(Picode)</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in cservice%}
+                    {% if  entry.service_status=="accepted" and entry.location==professional_location %}
+                    <tr>
+                        <td>{{entry["id"]}}</td>
+                        <td>{{entry.customer_id}}</td>
+                        <td>9769494927</td>
+                        <td>{{entry.location}}</td>
+                        <td>{{entry.service_status}}</td>
+                        <td>
+                            <a href="/rejectcustomerservicerequests/{{professional_id}}/{{entry.id}}/reject">Reject</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="closedservicerequests">
+            <br>
+            <h2>Closed Service Requests</h2>
+            <table id="closed-service-requests">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone Number</th>
+                        <th>Location(Pincode)</th>
+                        <th>Date</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in cservice%}
+                    {% if entry.service_status=="closed" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location%}
+                    <tr>
+                        <td>{{entry.id}}</td>
+                        <td>{{entry.customer_id}}</td>
+                        <td>9920494952</td>
+                        <td>{{entry.location}}</td>
+                        <td>{{entry.date_of_completion}}</td>
+                        <td>5</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
     </div>
     <div id="footer">

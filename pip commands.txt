@@ -1,0 +1,23 @@
+Set-ExecutionPolicy Unrestricted -Scope Process
+& C:\Users\'Hemendra Sharma'\beginner\'MADI Project'\venv\Scripts\Activate.ps1
+
+
+python.exe -m pip install -r requirements.txt 
+
+pip install -r .\requirements.txt
+
+1) python3 -m venv venv
+2)./venv/Scripts/activate
+3) which python or python --version
+4) pip install -r .\requirements.txt or pip install -r requirements.txt
+
+
+
+ virtualenv system-site-packages 
+
+
+###########start venv
+
+
+Set-ExecutionPolicy Unrestricted -Scope Process
+./venv/Scripts/activate

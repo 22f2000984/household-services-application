@@ -165,7 +165,7 @@
                     <th>Experience</th>
                     <th>Service Name</th>
                     <th>Action</th>
-                    <th>CV</th>
+                    <th>Profile Doc(CV)</th>
                 </tr>
             </thead>
             <tbody id="td">
@@ -193,6 +193,7 @@
             <thead id="th">
                 <tr>
                     <th>ID</th>
+                    <th>Service Name</th>
                     <th>Assigned Professional</th>
                     <th>Requested Date</th>
                     <th>Status(Requested/Accepted/Closed)</th>
@@ -200,13 +201,18 @@
                 </tr>
             </thead>
             <tbody id="td">
-                {% for entry in servicename %}
+                {% for entry in cservice %}
                 <tr>
-                    <td>{{entry["id"]}}</td>
-                    <td>{{entry["servicename"]}}</td>
-                    <td>{{entry["description"]}}</td>
-                    <td>{{entry["baseprice"]}}</td>
-                    <td>Edit/Delete</td>
+                    <td><a href="/viewcustomerservicerequests/{{entry.id}}">{{entry["id"]}}</a></td>
+                    <td>{{entry["service_id"]}}</td>
+                    <td>{{entry["professional_id"]}}</td>
+                    <td>{{entry["date_of_request"]}}</td>
+                    <td>{{entry["service_status"]}}</td>
+                    <td>
+                        <a href="/viewcustomerservicerequests/{{entry.id}}/accept">Accept /</a>
+                        <a href="/viewcustomerservicerequests/{{entry.id}}/reject">Reject /</a>
+                        <a href="/viewcustomerservicerequests/{{entry.id}}/close">Close</a>
+                    </td>
                 </tr>
                 {% endfor %}
             <tbody>

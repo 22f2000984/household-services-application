@@ -27,6 +27,7 @@ class User_Info(db.Model):
     role=db.Column(db.Integer,nullable=False,default=1)
     status=db.Column(db.String,unique=True)
     location=db.Column(db.String,nullable=False)
+    reviews=db.Column(db.String,nullable=False)
 
 class Service_Info(db.Model):
     __tablename__="service_info"
@@ -47,6 +48,7 @@ class Customer_Service_Request(db.Model):
     date_of_completion=db.Column(db.String,nullable=False)
     service_status=db.Column(db.String,nullable=False)
     remarks=db.Column(db.String)
+    location=db.Column(db.String,nullable=False)
     
     
     
@@ -73,7 +75,7 @@ def user_login():
                 return redirect(url_for(".customer_dashboard",customer_name=usr.full_name,customer_id=usr.id))
             elif usr and usr.role==2:
                 #return redirect("/customerdashboard",customer_name=usr.full_name)
-                return redirect(url_for(".professional_dashboard",professional_name=usr.full_name))
+                return redirect(url_for(".professional_dashboard",professional_name=usr.full_name,professional_id=usr.id))
             else:
                 return render_template('login.html',msg='"Invalid credentials, try again"')
         elif usr and usr.status=="rejected":
@@ -100,7 +102,7 @@ def customer_signup():
         location=request.form.get("customer_location")
         usr=User_Info.query.filter_by(email=email).first()
         if not usr:
-            new_user=User_Info(email=email,full_name=fname,user_name=uname,service_name="Customer",experience=0,pwd=pwd,add=add,pincode=pin,role=1,status="approved",location=location)
+            new_user=User_Info(email=email,full_name=fname,user_name=uname,service_name="Customer",experience=0,pwd=pwd,add=add,pincode=pin,role=1,status="approved",location=location,reviews="excellent")
             db.session.add(new_user)
             db.session.commit()
             return redirect("/login")
@@ -130,7 +132,7 @@ def serviceprofessional_signup():
         location=request.form.get("customer_location")
         usr=User_Info.query.filter_by(email=email).first()
         if not usr:
-            new_professional=User_Info(email=email,full_name=fname,user_name=uname,service_name=sname,experience=sexp,pwd=pwd,add=add,pincode=pin,role=2,status="pending",location=location)
+            new_professional=User_Info(email=email,full_name=fname,user_name=uname,service_name=sname,experience=sexp,pwd=pwd,add=add,pincode=pin,role=2,status="requested",location=location,reviews="excellent")
             db.session.add(new_professional)
             db.session.commit()
             return redirect("/login")
@@ -147,16 +149,18 @@ def admin_dashboard():
     #name = request.args['admin_name']
     crole=1
     prole=2
-    status="pending"
+    status="requested"
     servname=Service_Info.query.all()
     professional=User_Info.query.filter_by(role=prole,status=status)
+    customerservicerequests=Customer_Service_Request.query.all()
     #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
-    return render_template("admin_dashboard.html",servicename=servname,professional=professional)
+    return render_template("admin_dashboard.html",servicename=servname,professional=professional,cservice=customerservicerequests)
 
 #Route to admin search
 @app.route("/adminsearch",methods=["GET","POST"])
 def admin_search():
     servname=Service_Info.query.all()
+    crequests=Customer_Service_Request.query.all()
     if request.method=="POST":
         #name = request.args['admin_name']
         searchby=request.form.get("s_name")
@@ -168,7 +172,8 @@ def admin_search():
         status="approved"
         if searchby=="services":
             servname=Service_Info.query.all()
-            return render_template("admin_search.html",servicename=servname,searchby=searchby)
+            crequests=Customer_Service_Request.query.all()
+            return render_template("admin_search.html",crequests=crequests,searchby=searchby)
         elif searchby=="customers":
             name="customers"
             #customers=User_Info.query.filter_by().first()
@@ -185,6 +190,7 @@ def admin_search():
             return render_template("admin_search.html",servicename=servname)
         #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
         
+    return render_template("admin_search.html",crequests=crequests)
     return render_template("admin_search.html",servicename=servname)
 
 #Route for new service
@@ -268,7 +274,7 @@ def delete_professional(id):
 @app.route("/viewprofessional/<int:id>", methods=["GET", "POST"])
 def view_professional(id):
   service = User_Info.query.filter_by(id=id).first()
-  return render_template ("view_professional.html", id=service.id)
+  return render_template ("view_professional.html",service=service)
   #return redirect("/admindashboard")
 
 #Route to approve service professional's registration request from admin dashboard
@@ -294,8 +300,40 @@ def reject_professional(id):
 def admin_summary():
     return render_template("admin_summary.html")
 
-# Add service name 
+#Route to view customer service requests
+@app.route("/viewcustomerservicerequests/<int:id>", methods=["GET"])
+def customer_service_requests(id):
+    service = Customer_Service_Request.query.filter_by(id=id).first()
+    return render_template("view_customerservicerequests.html",service=service)
 
+#Route to approve service professional's registration request from admin dashboard
+@app.route("/viewcustomerservicerequests/<int:id>/accept", methods=["GET", "POST"])
+def accept_customer_service_requests(id):
+  service = Customer_Service_Request.query.filter_by(id=id).first()
+  service.service_status="accepted"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect("/admindashboard")
+
+#Route to reject service professional's registration request from admin dashboard
+@app.route("/viewcustomerservicerequests/<int:id>/reject", methods=["GET", "POST"])
+def reject_customer_service_requests(id):
+  service = Customer_Service_Request.query.filter_by(id=id).first()
+  service.service_status="rejected"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect("/admindashboard")
+
+#Route to close customer service request
+@app.route("/viewcustomerservicerequests/<int:id>/close", methods=["GET", "POST"])
+def close_customer_service_requests(id):
+  service = Customer_Service_Request.query.filter_by(id=id).first()
+  service.service_status="closed"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect("/admindashboard")
+
+# Add service name 
 @app.route("/addservice", methods=["GET","POST"])
 def add_service():
     if request.method=='POST':
@@ -413,13 +451,14 @@ def book_service(id,customer_id):
     customerid=customer_id
     professionalid=9
     customer_name="ABC"
+    usr=User_Info.query.filter_by(id=customerid).first()
     #dateofrequested=date.today()
     #dateofcompletion=date.today()
     dateofrequested=date.today()
     dateofcompletion=date.today()
-    servicestatus="pending"
+    servicestatus="requested"
     remarks=None
-    new_service=Customer_Service_Request(service_id=serviceid,customer_id=customerid,professional_id=professionalid,date_of_request=dateofrequested,date_of_completion=dateofcompletion,service_status=servicestatus,remarks=remarks)
+    new_service=Customer_Service_Request(service_id=serviceid,customer_id=customerid,professional_id=professionalid,date_of_request=dateofrequested,date_of_completion=dateofcompletion,service_status=servicestatus,remarks=remarks,location=usr.location)
     db.session.add(new_service)
     db.session.commit()
     return redirect("/login")
@@ -427,10 +466,51 @@ def book_service(id,customer_id):
 '''---------------------Professional section---------------------------'''
 
 #Route for professional dashboard
-@app.route("/professionaldashboard")
+@app.route("/professionaldashboard/")
 def professional_dashboard():
     name = request.args['professional_name']
-    return render_template("professional_dashboard.html",professional_name=name)
+    id=request.args['professional_id']
+    cservice=Customer_Service_Request.query.all()
+    usr=User_Info.query.filter_by(id=id).first()
+    return render_template("professional_dashboard.html",professional_name=name,professional_id=id,cservice=cservice,professional_location=usr.location)
+
+#Route for professional dashboard
+#@app.route("/professionaldashboard1/<int:professional_id>/<int:id>")
+@app.route("/professionaldashboard/<int:professional_id>")
+def professional_dashboard1(professional_id):
+    #name = "ABC"
+    cservice=Customer_Service_Request.query.all()
+    usr=User_Info.query.filter_by(id=professional_id).first()
+    name=usr.full_name
+    return render_template("professional_dashboard.html",professional_name=name,professional_id=professional_id,cservice=cservice,professional_location=usr.location)
+
+#Route to approve service professional's registration request from admin dashboard
+@app.route("/viewprofessionalprofile/<int:id>", methods=["GET", "POST"])
+def view_professional_profile(id):
+  professional_id=id
+  service = User_Info.query.filter_by(id=id).first()
+  return render_template ("view_professional_profile.html",service=service,professional_id=id)
+  #return redirect("/admindashboard")
+  
+  #Route to approve service professional's registration request from admin dashboard
+@app.route("/acceptcustomerservicerequests/<int:professional_id>/<int:id>/accept", methods=["GET", "POST"])
+def accept_customer_service_requests_by_professional(professional_id,id):
+  service = Customer_Service_Request.query.filter_by(id=id).first()
+  
+  service.service_status="accepted"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
+
+#Route to reject service professional's registration request from admin dashboard
+@app.route("/rejectcustomerservicerequests/<int:professional_id>/<int:id>/reject", methods=["GET", "POST"])
+def reject_customer_service_requests_by_professional(professional_id,id):
+  service = Customer_Service_Request.query.filter_by(id=id).first()
+  service.service_status="rejected"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect(url_for(".professional_dashboard1",professional_id=professional_id,id=id))
+  #return redirect("/professionaldashboard")
     
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True, port=8080)

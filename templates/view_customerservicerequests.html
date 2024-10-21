@@ -52,31 +52,23 @@
 </style>
 <body>
     <br><br>
-    <h2>Service professional's {{service.id}} details</h2>
+    <h2>Customer Seervice Request {{service.id}} details</h2>
     <table id="service-table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Email</th>
-                <th>Full Name</th>
-                <th>User Name</th>
                 <th>Service Name</th>
-                <th>Experience</th>
-                <th>Address</th>
-                <th>Pincode</th>
-                <th>Status</th>
+                <th>Assigned professional</th>
+                <th>Requested Date</th>
+                <th>Status(Requested/Accepted/Closed)</th>
             </tr>
         <tbody>
             <tr>
                 <td>{{service["id"]}}</td>
-                <td>{{service["email"]}}</td>
-                <td>{{service["full_name"]}}</td>
-                <td>{{service["user_name"]}}</td>
-                <td>{{service["service_name"]}}</td>
-                <td>{{service["experience"]}}</td>
-                <td>{{service["add"]}}</td>
-                <td>{{service["pincode"]}}</td>
-                <td>{{service["status"]}}</td>
+                <td>{{service["service_id"]}}</td>
+                <td>{{service["professional_id"]}}</td>
+                <td>{{service["date_of_request"]}}</td>
+                <td>{{service["service_status"]}}</td>
             </tr>
         </tbody>
         </thead>

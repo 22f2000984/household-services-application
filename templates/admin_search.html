@@ -108,6 +108,7 @@
                         <th>Experience</th>
                         <th>Service Name</th>
                         <th>Status</th>
+                        <th>Customer Reviews</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -120,6 +121,7 @@
                         <td>{{entry["experience"]}}</td>
                         <td>{{entry["service_name"]}}</td>
                         <td>{{entry["status"]}}</td>
+                        <td>{{entry["reviews"]}}</td>
                         <td><a href="/blockprofessional/{{entry.id}}/reject">Block</a>| <a href="/blockprofessional/{{entry.id}}/approve">Unblock</a></td>
                     </tr>
                     {% endif %}
@@ -139,6 +141,7 @@
                         <th>Experience</th>
                         <th>Service Name</th>
                         <th>Status</th>
+                        <th>Reviews</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -151,6 +154,7 @@
                         <td>{{entry["experience"]}}</td>
                         <td>{{entry["service_name"]}}</td>
                         <td>{{entry["status"]}}</td>
+                        <td>{{entry["reviews"]}}</td>
                         <td><a href="/blockprofessional/{{entry.id}}/reject">Block</a>| <a href="/blockprofessional/{{entry.id}}/approve">Unblock</a></td>
                     </tr>
                     {% endif %}
@@ -158,23 +162,25 @@
 
     {% elif searchby=="services" %}
             <div>
-                <h1>Service requests</h1>
+                <h2>Customer Service Requests</h2>
                 <table id = "servicerequest-table">
                     <thead id="th">
                         <tr>
                             <th>ID</th>
-                            <th>Name</th>
-                            <th>Experience</th>
                             <th>Service Name</th>
+                            <th>Assigned Professional</th>
+                            <th>Requested Date</th>
+                            <th>Status(Requested/Accepted/Closed)</th>
                         </tr>
                     </thead>
                     <tbody id="td">
-                        {% for entry in services%}
+                        {% for entry in crequests%}
                         <tr>
                             <td>{{entry["id"]}}</td>
-                            <td>{{entry["full_name"]}}</td>
-                            <td>{{entry["experience"]}}</td>
-                            <td>{{entry["service_name"]}}</td>
+                            <td>{{entry["service_id"]}}</td>
+                            <td>{{entry["professional_id"]}}</td>
+                            <td>{{entry["date_of_request"]}}</td>
+                            <td>{{entry["service_status"]}}</td>
                         </tr>   
                         {% endfor %}
                     <tbody>
@@ -183,23 +189,25 @@
         {% else %}
          <p>Done</p>
          <div>
-            <h1>Service requests</h1>
+            <h2>Customer Service Requests</h2>
             <table id = "servicerequest-table">
                 <thead id="th">
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Experience</th>
                         <th>Service Name</th>
+                        <th>Assigned Professional</th>
+                        <th>Requested Date</th>
+                        <th>Status(Requested/Accepted/Closed)</th>
                     </tr>
                 </thead>
                 <tbody id="td">
-                    {% for entry in services%}
+                    {% for entry in crequests%}
                     <tr>
                         <td>{{entry["id"]}}</td>
-                        <td>{{entry["full_name"]}}</td>
-                        <td>{{entry["experience"]}}</td>
-                        <td>{{entry["service_name"]}}</td>
+                        <td>{{entry["service_id"]}}</td>
+                        <td>{{entry["professional_id"]}}</td>
+                        <td>{{entry["date_of_request"]}}</td>
+                        <td>{{entry["service_status"]}}</td>
                     </tr>   
                     {% endfor %}
                 <tbody>
