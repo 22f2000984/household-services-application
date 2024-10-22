@@ -87,7 +87,7 @@
                 <ul>
                     <li><a href="#">Home |</a></li>
                     <li><a href="professionalsearch.html">Search |</a></li>
-                    <li><a href="professionalsummary.html">Summary |</a></li>
+                    <li><a href="/professionalsummary/{{professional_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
@@ -148,7 +148,7 @@
                 </thead>
                 <tbody id="td">
                     {% for entry in cservice%}
-                    {% if  entry.service_status=="accepted" and entry.location==professional_location %}
+                    {% if  entry.service_status=="accepted" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location %}
                     <tr>
                         <td>{{entry["id"]}}</td>
                         <td>{{entry.customer_id}}</td>

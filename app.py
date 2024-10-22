@@ -498,6 +498,7 @@ def accept_customer_service_requests_by_professional(professional_id,id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
   
   service.service_status="accepted"
+  service.professional_id=professional_id
   #db.session.delete(service)
   db.session.commit()
   return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
@@ -511,6 +512,12 @@ def reject_customer_service_requests_by_professional(professional_id,id):
   db.session.commit()
   return redirect(url_for(".professional_dashboard1",professional_id=professional_id,id=id))
   #return redirect("/professionaldashboard")
+  
+  
+@app.route("/professionalsummary/<int:professional_id>")
+def professional_summary(professional_id):
+    usr=User_Info.query.filter_by(id=professional_id).first()
+    return render_template("professional_summary.html",professional_name=usr.full_name,professional_id=usr.id)
     
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True, port=8080)
