@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Summary</title>
+    <title>professional Summary</title>
     <style>
         * {
             text-decoration: none;
@@ -38,16 +38,31 @@
             margin-right: 5px;
             font-weight: bold;
         }
-        h2 {
-            align-text:center;
-            color:blue;
-            margin-left:500px;
+  
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 5px;
+            border:1px solid black;
+            margin-top:50px;
+            margin-left:100px;
+            border-radius:20px;
+            height:460px;
+            width:500px;
+          }
+          
+          /* Clearfix (clear floats) */
+          .row::after {
+            content: "";
+            clear: both;
+            display: table;
+          }
+
+          h3 {
             font-style:italic;
-        }
-        h3 {
             color:blue;
-            font-style:italic;
-        }
+            text-align:center;
+          }
 
     </style>
 
@@ -59,7 +74,7 @@
                 <div class="logo">Welcome {{professional_name}} (Professional dashboard) </div>
                 <ul>
                     <li><a href="/professionaldashboard/{{professional_id}}">Home |</a></li>
-                    <li><a href="professionalsearch.html">Search |</a></li>
+                    <li><a href="/professionalsearch/<int:{{professional_id}}>">Search |</a></li>
                     <li><a href="#">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
@@ -68,10 +83,16 @@
     </div>
     <div id="main">
         {{professional_id}}
-        <h2>Statistical Summary</h2>
-        <br><br>
-        <h3>Service Requests</h3>
-
+        <h2 style="text-align:center;color:brown;font-style:italic;">STATISTICAL SUMMARIES</h2>
+        <div id="row">
+            <div class="column">
+                <h3>Reviews/Ratings</h3>
+                <img src="/static/images/prof_plot_pie.png" alt="Image-3" height="400px" width="500px"/>
+            </div>
+            <div class="column">
+                <h3>Service Request Summary</h3>
+                <img src="/static/images/prof_plot_bar.png" alt="Image-3" height="400px" width="500px"/>
+            </div>
     </div>
     <div id="footer">
 

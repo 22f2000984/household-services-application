@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Home</title>
+    <title>Professional Dashboard</title>
     <style>
         * {
             text-decoration: none;
@@ -124,7 +124,7 @@
                         <td>{{entry.location}}</td>
                         <td>{{entry.service_status}}</td>
                         <td>
-                            <a href="/acceptcustomerservicerequests/{{professional_id}}/{{entry.id}}/accept">Accept /</a>
+                            <a href="/acceptcustomerservicerequests/{{professional_id}}/{{entry.id}}/accept">Accept</a>
                         </td>
                     </tr>
                     {% endif %}
@@ -178,16 +178,16 @@
                         <th>Ratings</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="td">
                     {% for entry in cservice%}
-                    {% if entry.service_status=="closed" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location%}
+                    {% if  entry.service_status=="closed" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location %}
                     <tr>
                         <td>{{entry.id}}</td>
                         <td>{{entry.customer_id}}</td>
                         <td>9920494952</td>
                         <td>{{entry.location}}</td>
                         <td>{{entry.date_of_completion}}</td>
-                        <td>5</td>
+                        <td>{{entry.ratings}}</td>
                     </tr>
                     {% endif %}
                     {% endfor %}

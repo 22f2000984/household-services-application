@@ -2,7 +2,13 @@ import os
 from flask import Flask, render_template, request, redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
 from fileinput import filename
-#import datetime
+import numpy as np
+import matplotlib.pyplot as plt
+import datetime
+import io
+import base64
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import seaborn as sns
 
 from datetime import date
 
@@ -28,6 +34,7 @@ class User_Info(db.Model):
     status=db.Column(db.String,unique=True)
     location=db.Column(db.String,nullable=False)
     reviews=db.Column(db.String,nullable=False)
+    #customer_service_req=db.relation("Customer_Service_Request",cascade="all,delete",backref="user_info",lazy=True)
 
 class Service_Info(db.Model):
     __tablename__="service_info"
@@ -37,6 +44,7 @@ class Service_Info(db.Model):
     baseprice=db.Column(db.Integer,nullable=False)
     time_required=db.Column(db.String,nullable=False)
     service_type=db.Column(db.String,nullable=False)
+    #customer_service_req=db.relation("Customer_Service_Request",cascade="all,delete",backref="service_info",lazy=True)
     
 class Customer_Service_Request(db.Model):
     __tablename__="customer_service_request"
@@ -49,6 +57,7 @@ class Customer_Service_Request(db.Model):
     service_status=db.Column(db.String,nullable=False)
     remarks=db.Column(db.String)
     location=db.Column(db.String,nullable=False)
+    ratings=db.Column(db.String,nullable=False)
     
     
     
@@ -172,8 +181,10 @@ def admin_search():
         status="approved"
         if searchby=="services":
             servname=Service_Info.query.all()
+            username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            return render_template("admin_search.html",crequests=crequests,searchby=searchby)
+            #crequests=Customer_Service_Request.query.filter_by(service_status=searchtext).first()
+            return render_template("admin_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname)
         elif searchby=="customers":
             name="customers"
             #customers=User_Info.query.filter_by().first()
@@ -296,10 +307,58 @@ def reject_professional(id):
   return redirect("/admindashboard")
 
 # Admin summary 
+
 @app.route("/adminsummary", methods=["GET","POST"])
 def admin_summary():
+    path=os.path.join('static', 'images', 'plot_pie.png')
+    if os.path.exists("path"):
+        os.remove(path)
+    plot_graph('pie')
+    plot_graph('bar')
     return render_template("admin_summary.html")
 
+def plot_graph(abc):
+    cservice=Customer_Service_Request.query.all()
+    barlabels = ["Requested","Accepted","Closed","Rejected"]
+    pielabels=["Poor","Average","Excellent"]
+    
+    D={'Requested': 0,'Accepted': 0,'Closed': 0,'Rejected': 0}
+    D1={"Poor":0,"Average":0,"Excellent":0}
+    if abc=="bar":
+        for entry in cservice:
+            if entry.service_status=="requested":
+                D['Requested']+=1
+            elif entry.service_status=="accepted":
+                D['Accepted']+=1
+            elif entry.service_status=="closed":
+                D['Closed']+=1
+            else:
+                D['Rejected']+=1
+        data=list(D.values())
+        color = ['blue','green', 'purple', 'red']
+        plt.bar(barlabels,data,color=color)
+        plt.xlabel("STATUS FOR THE SERVICE REQUESTS",color="red")
+        plt.ylabel("COUNTS",color="red")
+        plt.savefig('static/images/plot_bar.png')
+        return plt.show()
+    elif abc=="pie":
+        for entry in cservice:
+            if entry.ratings=="poor":
+                D1['Poor']+=1
+            elif entry.ratings=="average":
+                D1['Average']+=1
+            #elif entry.ratings=="excellent":
+            else:
+                D1['Excellent']+=1
+                
+        data1=list(D1.values())
+        explode=(0.02,0.02,0.02)
+        plt.pie(data1,labels=pielabels,autopct='%1.1f%%',explode=explode)
+        plt.legend(loc='lower right')
+        plt.savefig('static/images/plot_pie.png')
+        return plt.show()
+
+    
 #Route to view customer service requests
 @app.route("/viewcustomerservicerequests/<int:id>", methods=["GET"])
 def customer_service_requests(id):
@@ -437,7 +496,7 @@ def block_professional(id):
 @app.route("/blockprofessional/<int:id>/reject", methods=["GET", "POST"])
 def unblock_professional(id):
   service = User_Info.query.filter_by(id=id).first()
-  service.status="reject"
+  service.status="rejected"
   #db.session.delete(service)
   db.session.commit()
   return redirect("/adminsearch")
@@ -458,7 +517,7 @@ def book_service(id,customer_id):
     dateofcompletion=date.today()
     servicestatus="requested"
     remarks=None
-    new_service=Customer_Service_Request(service_id=serviceid,customer_id=customerid,professional_id=professionalid,date_of_request=dateofrequested,date_of_completion=dateofcompletion,service_status=servicestatus,remarks=remarks,location=usr.location)
+    new_service=Customer_Service_Request(service_id=serviceid,customer_id=customerid,professional_id=professionalid,date_of_request=dateofrequested,date_of_completion=dateofcompletion,service_status=servicestatus,remarks=remarks,location=usr.location,ratings=remarks)
     db.session.add(new_service)
     db.session.commit()
     return redirect("/login")
@@ -513,11 +572,110 @@ def reject_customer_service_requests_by_professional(professional_id,id):
   return redirect(url_for(".professional_dashboard1",professional_id=professional_id,id=id))
   #return redirect("/professionaldashboard")
   
-  
-@app.route("/professionalsummary/<int:professional_id>")
+#Professional's  Summaries   
+
+#######################
+
+@app.route("/professionalsummary/<int:professional_id>", methods=["GET","POST"])
 def professional_summary(professional_id):
     usr=User_Info.query.filter_by(id=professional_id).first()
+    #cservice=Customer_Service_Request.query.all()
+    path=os.path.join('static', 'images', 'prof_plot_pie.png')
+    if os.path.exists("path"):
+        os.remove(path)
+    prof_plot_graph('pie',professional_id)
+    prof_plot_graph('bar',professional_id)
     return render_template("professional_summary.html",professional_name=usr.full_name,professional_id=usr.id)
+    #return render_template("professional_summary.html")
+
+def prof_plot_graph(abc,professional_id):
+    cservice=Customer_Service_Request.query.filter_by(professional_id=professional_id).all()
+    #barlabels = ["Received","Accepted","Closed","Rejected"]
+    barlabels = ["Received","Accepted","Closed","Rejected"]
+    pielabels=["Poor","Average","Excellent"]
+    #for entry in cservice:
+     #   if entry["professional_id"]==professional_id:
+    D={'Received': 0,'Accepted':0,'Closed': 0,'Rejected': 0}
+    D1={"Poor":0,"Average":0,"Excellent":0}
+    if abc=="bar":
+        for entry in cservice:
+            #if entry["professional_id"]==professional_id:
+                if entry.service_status =="requested":
+                    D['Received']+=1
+                elif entry.service_status=="accepted":
+                    D['Accepted']+=1
+                elif entry.service_status=="closed":
+                    D['Closed']+=1
+                else:
+                    D['Rejected']+=1
+        data=list(D.values())
+        color = ['blue','green', 'purple','red']
+        plt.bar(barlabels,data,color=color)
+        plt.xlabel("STATUS FOR THE SERVICE REQUESTS",color="red")
+        plt.ylabel("COUNTS",color="red")
+        plt.savefig('static/images/prof_plot_bar.png')
+        return plt.show()
+    elif abc=="pie":
+        for entry in cservice:
+        #    if entry["professional_id"]==professional_id:
+                if entry.ratings=="poor":
+                    D1['Poor']+=1
+                elif entry.ratings=="average":
+                    D1['Average']+=1
+                else:
+                    D1['Excellent']+=1
+                        
+        data1=list(D1.values())
+        explode=(0.02,0.02,0.02)
+        plt.pie(data1,labels=pielabels,autopct='%1.1f%%',explode=explode)
+        plt.legend(loc='lower right')
+        plt.savefig('static/images/prof_plot_pie.png')
+        return plt.show()
+
+
+#@app.route("/professionalsearch")
+@app.route("/professionalsearch",methods=["GET","POST"])
+def professional_search():
+    servname=Service_Info.query.all()
+    crequests=Customer_Service_Request.query.all()
+    if request.method=="POST":
+        #name = request.args['admin_name']
+        searchby=request.form.get("s_name")
+        searchtext=request.form.get("s_text")
+        servname=Service_Info.query.all()
+        role1=0
+        role2=1
+        role3=2
+        status="approved"
+        if searchby=="services":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            #crequests=Customer_Service_Request.query.filter_by(service_status=searchtext).first()
+            return render_template("admin_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname)
+        elif searchby=="customers":
+            name="customers"
+            #customers=User_Info.query.filter_by().first()
+            customers=User_Info.query.all()
+            return render_template("admin_search.html",customers=customers,searchby=searchby)
+        elif searchby=="professionals":
+            name="professionals"
+            #ole=2
+            #professionals=User_Info.query.filter_by(role=int(role)).first()
+            professionals=User_Info.query.all()
+            return render_template("admin_search.html",professionals=professionals,searchby=searchby)
+        else:
+            servname=Service_Info.query.all()
+            return render_template("admin_search.html",servicename=servname)
+        #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
+        
+    return render_template("admin_search.html",crequests=crequests)
+'''------------ Plotting graphs for admin dashboardd--------------------------------'''
+
+#plotting graph for admin dashbaord
+
+        
     
+
 if __name__ == "__main__":
   app.run(host="0.0.0.0", debug=True, port=8080)

@@ -38,6 +38,36 @@
             margin-right: 5px;
             font-weight: bold;
         }
+        #image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width:100%;
+            padding-left:50px;
+        }
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 5px;
+            border:1px solid black;
+            margin-top:50px;
+            margin-left:100px;
+            border-radius:20px;
+            height:460px;
+            width:500px;
+          }
+          
+          /* Clearfix (clear floats) */
+          .row::after {
+            content: "";
+            clear: both;
+            display: table;
+          }
+          h3 {
+            font-style:italic;
+            color:blue;
+            text-align:center;
+          }
 
     </style>
 
@@ -50,14 +80,23 @@
                 <ul>
                     <li><a href="/admindashboard">Home |</a></li>
                     <li><a href="/adminsearch">Search |</a></li>
-                    <li><a href="/adminsummary">Summary |</a></li>
+                    <li><a href="#">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     <div id="main">
-
+        <h2 style="text-align:center;color:brown;font-style:italic;">SUMMARIES</h2>
+        <div id="row">
+            <div class="column">
+                <h3>Overall Customer Ratings</h3>
+                <img src="/static/images/plot_pie.png" alt="Image-3" height="400px" width="500px"/>
+            </div>
+            <div class="column">
+                <h3>Service Request Summary</h3>
+                <img src="/static/images/plot_bar.png" alt="Image-3" height="400px" width="500px"/>
+            </div>
     </div>
     <div id="footer">
 

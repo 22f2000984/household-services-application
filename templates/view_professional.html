@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>View Professionals' Profile</title>
 </head>
 <style>
     table , td {
@@ -18,7 +18,7 @@
         margin-bottom: 20px;
     }
     th {
-        background-color: beige;
+        background-color: lightblue;
         border: 1px solid black;
         font-size:20px;
     }
@@ -32,7 +32,7 @@
     h2 {
         font-style: italic;
         margin-left: 50px;
-        color: brown;
+        color: blue;
         margin-bottom: 20px;
 
     }
@@ -52,7 +52,7 @@
 </style>
 <body>
     <br><br>
-    <h2>Service professional's {{service.id}} details</h2>
+    <h2>Professional's {{service.id}} details</h2>
     <table id="service-table">
         <thead>
             <tr>
@@ -67,7 +67,7 @@
                 <th>Status</th>
             </tr>
         <tbody>
-            <tr>
+            <tr style="height:40px;">
                 <td>{{service["id"]}}</td>
                 <td>{{service["email"]}}</td>
                 <td>{{service["full_name"]}}</td>

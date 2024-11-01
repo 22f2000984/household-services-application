@@ -87,7 +87,7 @@
             <div id="search">
                 <label for="servicename">Search by :</label>
                 <select name="s_name" id="servicename" row="4" cols="21">
-                    <option value="services">Service requests</option>
+                    <option value="services">Home Service requests</option>
                     <option value="customers">Customers</option>
                     <option value="professionals">Professionals</option>
                 </select>
@@ -162,11 +162,12 @@
 
     {% elif searchby=="services" %}
             <div>
-                <h2>Customer Service Requests</h2>
+                <h2>Customer Service Requests ({{searchtext}})</h2>
                 <table id = "servicerequest-table">
                     <thead id="th">
                         <tr>
                             <th>ID</th>
+                            <th>Custmer Name</th>
                             <th>Service Name</th>
                             <th>Assigned Professional</th>
                             <th>Requested Date</th>
@@ -175,13 +176,24 @@
                     </thead>
                     <tbody id="td">
                         {% for entry in crequests%}
-                        <tr>
-                            <td>{{entry["id"]}}</td>
-                            <td>{{entry["service_id"]}}</td>
-                            <td>{{entry["professional_id"]}}</td>
-                            <td>{{entry["date_of_request"]}}</td>
-                            <td>{{entry["service_status"]}}</td>
-                        </tr>   
+                            {% if entry["service_status"]==searchtext %}
+                                {% for ent in username %}
+                                    {% if entry["professional_id"]==ent["id"] %}
+                                        {%for et in servname %}
+                                            {% if entry["service_id"]==et["id"] %}
+                                                <tr>
+                                                    <td>{{entry["id"]}}</td>
+                                                    <td>{{entry["customer_id"]}}</td>
+                                                    <td>{{et["servicename"]}}</td>
+                                                    <td>{{ent["full_name"]}}</td>
+                                                    <td>{{entry["date_of_request"]}}</td>
+                                                    <td>{{entry["service_status"]}}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
                     <tbody>
                 </table>
@@ -189,7 +201,7 @@
         {% else %}
          <p>Done</p>
          <div>
-            <h2>Customer Service Requests</h2>
+            <h2>Customer Service Requests All</h2>
             <table id = "servicerequest-table">
                 <thead id="th">
                     <tr>
