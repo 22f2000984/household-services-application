@@ -39,6 +39,33 @@
             font-weight: bold;
         }
 
+        #search {
+            font-style:italic;
+            font-size:20px;
+            margin-top:20px;
+            margin-left:700px;
+
+        }
+        #servicename {
+            font-style:italic;
+            font-size:15px;
+        }
+        #searchtext {
+            font-style:italic;
+            font-size:15px;
+        }
+        table ,th, td {
+            text-align: center;
+            font-style: italic;
+            width:900px;
+            margin-top: 20px;
+            margin-left: 50px;
+            border-radius: 10px;
+            border-color: blue;
+            border: 1px solid black;
+            border-collapse: collapse ;
+        }
+
     </style>
 
 </head>
@@ -46,19 +73,180 @@
     <div id="header">
         <nav class="navbar">
             <div class="navdiv">
-                <div class="logo">Welcome to Professional</div>
+                <div class="logo">Welcome to Professional Search</div>
                 <ul>
-                    <li><a href="/professionaldashboard/<int:id>">Home |</a></li>
+                    <li><a href="/professionaldashboard/{{professional_id}}">Home |</a></li>
                     <li><a href="#">Search |</a></li>
-                    <li><a href="professionalsummary.html">Summary |</a></li>
+                    <li><a href="/professionalsummary/{{professional_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     <div id="main">
+        <form action="/professionalsearch/{{professional_id}}" id="form" method="POST">
+            <div id="search">
+                <label for="servicename">Search by :</label>
+                <select name="p_name" id="servicename" row="4" cols="21">
+                    <option value="dates">Date</option>
+                    <option value="locations">Location</option>
+                    <option value="pincodes">Pincode</option>
+                </select>
+                <label for="name"></label>
+                <input type="text" id="searchtext" name="p_text" placeholder="yyyy-mm-dd or Delhi or Pincode">
+                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
+            </div>
+        </form>
+        {% if searchby=="dates" %}
+        <div>
+            <h2 style="font-style:italic;color:blue">Search Results (based on date)</h2>
+            <table id = "professionals-table">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Professional's Name</th>
+                        <th>Contact Phone</th>
+                        <th>Location (with pincode)</th>
+                        <th>Date</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in crequests %}
+                    {% if entry.date_of_request==searchtext and entry.professional_id==professional_id %}
+                    {% for usr in username %}
+                    {%if entry.customer_id==usr.id %}
+                    <tr>
+                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td>{{usr["full_name"]}}</td>
+                        <td>{{entry["professional_id"]}}</td>
+                        <td>{{usr["phone_number"]}}</td>
+                        <td>{{entry["location"]}}/110010</td>
+                        <td>{{entry["date_of_request"]}}</td>
+                        <td>{{entry["ratings"]}}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                <tbody>
+            </table>
+        </div>
+    {% elif searchby=="locations" %}
+        <div>
+            <h2 style="font-style:italic;color:blue;">Search Results (based on location)</h2>
+            <table id = "location-table">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Professional's Name</th>
+                        <th>Contact Phone</th>
+                        <th>Location (with pincode)</th>
+                        <th>Date</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in crequests %}
+                    {% if entry.location==searchtext and entry.professional_id==professional_id %}
+                    {% for usr in username %}
+                    {%if entry.customer_id==usr.id %}
+                    <tr>
+                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td>{{usr["full_name"]}}</td>
+                        <td>{{entry["professional_id"]}}</td>
+                        <td>{{usr["phone_number"]}}</td>
+                        <td>{{entry["location"]}}/110010</td>
+                        <td>{{entry["date_of_request"]}}</td>
+                        <td>{{entry["ratings"]}}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                <tbody>
+            </table>
+        </div>
 
-    </div>
+    {% elif searchby=="pincodes" %}
+        <div>
+            <h2 style="font-style:italic;color:blue;">Search Results (based on pincodes)</h2>
+            <table id = "location-table">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Professional's Name</th>
+                        <th>Contact Phone</th>
+                        <th>Location (with pincode)</th>
+                        <th>Date</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in crequests %}
+                    {% if entry.pincode==searchtext and entry.professional_id==professional_id %}
+                    {% for usr in username %}
+                    {%if entry.customer_id==usr.id %}
+                    <tr>
+                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td>{{usr["full_name"]}}</td>
+                        <td>{{entry["professional_id"]}}</td>
+                        <td>{{usr["phone_number"]}}</td>
+                        <td>{{entry["location"]}}/110010</td>
+                        <td>{{entry["date_of_request"]}}</td>
+                        <td>{{entry["ratings"]}}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                <tbody>
+            </table>
+        </div>    
+    {% else %}
+         <!--p>Done</p-->
+         <div>
+            <h3 style="font-style:italic;color:blue;">Please Select the option to search</h3>
+            <!--
+            <h2 style="font-style:italic;color:blue;">Search Results All</h2>
+            <table id = "location-table">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Professional's Name</th>
+                        <th>Contact Phone</th>
+                        <th>Location (with pincode)</th>
+                        <th>Date</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in crequests %}
+                    {% if entry.professional_id==professional_id %}
+                    {% for usr in username %}
+                    {%if entry.customer_id==usr.id %}
+                    <tr>
+                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td>{{usr["full_name"]}}</td>
+                        <td>{{entry["professional_id"]}}</td>
+                        <td>{{usr["phone_number"]}}</td>
+                        <td>{{entry["location"]}}/110010</td>
+                        <td>{{entry["date_of_request"]}}</td>
+                        <td>{{entry["ratings"]}}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                <tbody>
+            </table>
+         </div>    
+    {% endif %}
+         -->
     <div id="footer">
 
     </div>

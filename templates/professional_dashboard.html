@@ -86,7 +86,7 @@
                 <div class="logo">Welcome {{professional_name}} (Professional Dashboard)</div>
                 <ul>
                     <li><a href="#">Home |</a></li>
-                    <li><a href="professionalsearch.html">Search |</a></li>
+                    <li><a href="/professionalsearch/{{professional_id}}">Search |</a></li>
                     <li><a href="/professionalsummary/{{professional_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
@@ -98,7 +98,7 @@
         <div id="profile">
             <p>Professional's details</p>
             <button><a style="color:white;" href="/viewprofessionalprofile/{{professional_id}}">View</a></button>
-            <button><a style="color:white;" href="viewprofessional/{{professional_id}}/edit">Edit</a></button>
+            <button><a style="color:white;" href="/viewprofessionalprofile/{{professional_id}}/edit">Edit</a></button>
             <p></p>
         </div>
         <div id="todayservicerequests">
@@ -109,7 +109,7 @@
                         <th>ID</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
-                        <th>Location(Picode)</th>
+                        <th>Location(Pincode)</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -117,16 +117,20 @@
                 <tbody id="td">
                     {% for entry in cservice%}
                     {% if  (entry.service_status=="requested" or entry.service_status=="rejected") and entry.location==professional_location %}
+                    {% for us in user %}
+                    {%if entry.customer_id==us.id%}
                     <tr>
                         <td>{{entry["id"]}}</td>
-                        <td>{{entry.customer_id}}</td>
-                        <td>9769494927</td>
+                        <td>{{us.full_name}}</td>
+                        <td>{{us.phone_number}}</td>
                         <td>{{entry.location}}</td>
                         <td>{{entry.service_status}}</td>
                         <td>
                             <a href="/acceptcustomerservicerequests/{{professional_id}}/{{entry.id}}/accept">Accept</a>
                         </td>
                     </tr>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                     {% endfor %}
                 </tbody>
@@ -141,7 +145,7 @@
                         <th>ID</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
-                        <th>Location(Picode)</th>
+                        <th>Location(Pincode)</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -149,16 +153,20 @@
                 <tbody id="td">
                     {% for entry in cservice%}
                     {% if  entry.service_status=="accepted" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location %}
+                    {% for us in user %}
+                    {%if entry.customer_id==us.id%}
                     <tr>
                         <td>{{entry["id"]}}</td>
-                        <td>{{entry.customer_id}}</td>
-                        <td>9769494927</td>
+                        <td>{{us.full_name}}</td>
+                        <td>{{us.phone_number}}</td>
                         <td>{{entry.location}}</td>
                         <td>{{entry.service_status}}</td>
                         <td>
                             <a href="/rejectcustomerservicerequests/{{professional_id}}/{{entry.id}}/reject">Reject</a>
                         </td>
                     </tr>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                     {% endfor %}
                 </tbody>
@@ -181,14 +189,18 @@
                 <tbody id="td">
                     {% for entry in cservice%}
                     {% if  entry.service_status=="closed" and professional_id|string() == entry.professional_id|string() and entry.location==professional_location %}
+                    {% for us in user %}
+                    {%if entry.customer_id==us.id%}
                     <tr>
                         <td>{{entry.id}}</td>
-                        <td>{{entry.customer_id}}</td>
-                        <td>9920494952</td>
+                        <td>{{us.full_name}}</td>
+                        <td>{{us.phone_number}}</td>
                         <td>{{entry.location}}</td>
                         <td>{{entry.date_of_completion}}</td>
                         <td>{{entry.ratings}}</td>
                     </tr>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                     {% endfor %}
                 </tbody>

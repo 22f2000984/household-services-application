@@ -34,6 +34,7 @@ class User_Info(db.Model):
     status=db.Column(db.String,unique=True)
     location=db.Column(db.String,nullable=False)
     reviews=db.Column(db.String,nullable=False)
+    phone_number=db.Column(db.Integer,nullable=False)
     #customer_service_req=db.relation("Customer_Service_Request",cascade="all,delete",backref="user_info",lazy=True)
 
 class Service_Info(db.Model):
@@ -108,14 +109,15 @@ def customer_signup():
         uname=request.form.get("c_email")
         add=request.form.get("c_address")
         pin=request.form.get("c_pincode")
+        cphone=request.form.get("c_phone")
         location=request.form.get("customer_location")
         usr=User_Info.query.filter_by(email=email).first()
         if not usr:
-            new_user=User_Info(email=email,full_name=fname,user_name=uname,service_name="Customer",experience=0,pwd=pwd,add=add,pincode=pin,role=1,status="approved",location=location,reviews="excellent")
+            new_user=User_Info(email=email,full_name=fname,user_name=uname,service_name="Customer",experience=0,pwd=pwd,add=add,pincode=pin,role=1,status="approved",location=location,reviews="None",phone_number=cphone)
             db.session.add(new_user)
             db.session.commit()
             return redirect("/login")
-            #render_template("/login.html",msg="Successfully account created")
+            #render_template("customer_signup.html",msg="Professional registered successfully")
         elif usr:
             return render_template('customer_signup.html',msg='"Customer exists"')
     return render_template("customer_signup.html",msg="",usr=usr)
@@ -138,13 +140,15 @@ def serviceprofessional_signup():
         add=request.form.get("s_address")
         pin=request.form.get("s_pincode")
         sexp=request.form.get("s_exp")
+        sphone=request.form.get("s_phone")
         location=request.form.get("customer_location")
         usr=User_Info.query.filter_by(email=email).first()
         if not usr:
-            new_professional=User_Info(email=email,full_name=fname,user_name=uname,service_name=sname,experience=sexp,pwd=pwd,add=add,pincode=pin,role=2,status="requested",location=location,reviews="excellent")
+            new_professional=User_Info(email=email,full_name=fname,user_name=uname,service_name=sname,experience=sexp,pwd=pwd,add=add,pincode=pin,role=2,status="requested",location=location,reviews="None",phone_number=sphone)
             db.session.add(new_professional)
             db.session.commit()
-            return redirect("/login")
+            #return redirect("/login")
+            return render_template('professional_signup.html',msg='"Service Professional registered successfully"')
         elif usr:
             return render_template('professional_signup.html',msg='"Service Professional exists"',servicename=servname,pservicename=pservicename)
     return render_template("professional_signup.html",msg="",servicename=servname,pservicename=pservicename)
@@ -161,9 +165,10 @@ def admin_dashboard():
     status="requested"
     servname=Service_Info.query.all()
     professional=User_Info.query.filter_by(role=prole,status=status)
+    user=User_Info.query.all()
     customerservicerequests=Customer_Service_Request.query.all()
     #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
-    return render_template("admin_dashboard.html",servicename=servname,professional=professional,cservice=customerservicerequests)
+    return render_template("admin_dashboard.html",servicename=servname,professional=professional,cservice=customerservicerequests,user=user)
 
 #Route to admin search
 @app.route("/adminsearch",methods=["GET","POST"])
@@ -202,7 +207,7 @@ def admin_search():
         #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
         
     return render_template("admin_search.html",crequests=crequests)
-    return render_template("admin_search.html",servicename=servname)
+    #return render_template("admin_search.html",servicename=servname)
 
 #Route for new service
 @app.route("/newservice")
@@ -426,6 +431,65 @@ def customer_dashboard():
     #service=Service_Info.query.all()
     return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request)
 
+#Route for customer dashboard
+@app.route("/customerdashboard/<int:id>")
+def customer_dashboard1(id):
+    service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
+    #customerrequest=Customer_Service_Request.query.filter_by(customer_id=id).first()
+    customer_service_request=Customer_Service_Request.query.all()
+    #service=Service_Info.query.all()
+    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request)
+
+#Route to approve service professional's registration request from admin dashboard
+@app.route("/viewcustomerprofile/<int:id>", methods=["GET", "POST"])
+def view_customer_profile(id):
+  professional_id=id
+  service = User_Info.query.filter_by(id=id).first()
+  return render_template ("view_customer_profile.html",service=service,customer_id_id=id)
+
+
+# Edit customer's profile
+@app.route("/viewcustomerprofile/<int:id>/edit", methods=["GET", "POST"])
+def view_customer_profile_edit(id):
+  customer_id=id
+  pservicename=Service_Info.query.all()
+  servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
+  service = User_Info.query.filter_by(id=id).first()
+  user=User_Info.query.all()
+  return render_template ("customer_profileedit.html",service=service,customer_id=id,user=user,pservicename=pservicename,servname=servname)
+
+@app.route("/customerprofileupdate/<int:customer_id>", methods=["GET","POST"])
+def customer_profile_update(customer_id):
+    if request.method =="POST":
+        #age=int(id)
+        ids=customer_id
+        email=request.form.get("c_email")
+        pwd=request.form.get("c_password")
+        full_name=request.form.get("c_fullname")
+        phone_number=request.form.get("c_phone")
+        #user_name=request.form.get("s_email")
+        #service_name=request.form.get("ps_name")
+        #experience=request.form.get("s_exp")
+        add=request.form.get("c_address")
+        location=request.form.get("customer_location")
+        pincode=request.form.get("c_pincode")
+        prfser=User_Info.query.filter_by(id=ids).first()
+        prfser.email=email
+        prfser.pwd=pwd
+        prfser.full_name=full_name
+        prfser.user_name=email
+        #prfser.service_name="customer"
+        #prfser.exp=0
+        prfser.add=add
+        prfser.pincode=pincode
+        prfser.location=location
+        prfser.phone_number=phone_number
+        
+        db.session.commit()
+        return redirect(url_for(".customer_dashboard1",id=customer_id))
+    
+    
+
 #Different services
 @app.route("/cleaning/<customer_id>",methods=["GET","POST"])
 def home_cleaning(customer_id):
@@ -531,7 +595,8 @@ def professional_dashboard():
     id=request.args['professional_id']
     cservice=Customer_Service_Request.query.all()
     usr=User_Info.query.filter_by(id=id).first()
-    return render_template("professional_dashboard.html",professional_name=name,professional_id=id,cservice=cservice,professional_location=usr.location)
+    user=User_Info.query.all()
+    return render_template("professional_dashboard.html",professional_name=name,professional_id=id,cservice=cservice,professional_location=usr.location,user=user)
 
 #Route for professional dashboard
 #@app.route("/professionaldashboard1/<int:professional_id>/<int:id>")
@@ -540,8 +605,9 @@ def professional_dashboard1(professional_id):
     #name = "ABC"
     cservice=Customer_Service_Request.query.all()
     usr=User_Info.query.filter_by(id=professional_id).first()
+    user=User_Info.query.all()
     name=usr.full_name
-    return render_template("professional_dashboard.html",professional_name=name,professional_id=professional_id,cservice=cservice,professional_location=usr.location)
+    return render_template("professional_dashboard.html",professional_name=name,professional_id=professional_id,cservice=cservice,professional_location=usr.location,user=user)
 
 #Route to approve service professional's registration request from admin dashboard
 @app.route("/viewprofessionalprofile/<int:id>", methods=["GET", "POST"])
@@ -552,9 +618,55 @@ def view_professional_profile(id):
   #return redirect("/admindashboard")
   
   #Route to approve service professional's registration request from admin dashboard
+  ###########################################################################
+  ###########################
+# Edit professional's profile
+@app.route("/viewprofessionalprofile/<int:id>/edit", methods=["GET", "POST"])
+def view_professional_profile_edit(id):
+  professional_id=id
+  pservicename=Service_Info.query.all()
+  servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
+  service = User_Info.query.filter_by(id=id).first()
+  user=User_Info.query.all()
+  return render_template ("professional_profileedit.html",service=service,professional_id=id,user=user,pservicename=pservicename,servname=servname)
+  #return redirect("/admindashboard")
+# Professionals' profile update
+@app.route("/professionalprofileupdate/<int:professional_id>", methods=["GET","POST"])
+def professional_profile_update(professional_id):
+    #pservicename=Service_Info.query.all()
+    #servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
+    if request.method =="POST":
+        #age=int(id)
+        ids=professional_id
+        email=request.form.get("s_email")
+        pwd=request.form.get("s_password")
+        full_name=request.form.get("s_fullname")
+        #user_name=request.form.get("s_email")
+        service_name=request.form.get("ps_name")
+        experience=request.form.get("s_exp")
+        add=request.form.get("s_address")
+        location=request.form.get("customer_location")
+        pincode=request.form.get("s_pincode")
+        prfser=User_Info.query.filter_by(id=ids).first()
+        prfser.email=email
+        prfser.pwd=pwd
+        prfser.full_name=full_name
+        prfser.user_name=email
+        prfser.service_name=service_name
+        prfser.exp=experience
+        prfser.add=add
+        prfser.pincode=pincode
+        prfser.location=location
+        
+        db.session.commit()
+        return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
+    
+    
+
 @app.route("/acceptcustomerservicerequests/<int:professional_id>/<int:id>/accept", methods=["GET", "POST"])
 def accept_customer_service_requests_by_professional(professional_id,id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
+  #user=User_Info.query.all()
   
   service.service_status="accepted"
   service.professional_id=professional_id
@@ -634,43 +746,40 @@ def prof_plot_graph(abc,professional_id):
 
 
 #@app.route("/professionalsearch")
-@app.route("/professionalsearch",methods=["GET","POST"])
-def professional_search():
+@app.route("/professionalsearch/<int:professional_id>",methods=["GET","POST"])
+def professional_search(professional_id):
     servname=Service_Info.query.all()
     crequests=Customer_Service_Request.query.all()
     if request.method=="POST":
         #name = request.args['admin_name']
-        searchby=request.form.get("s_name")
-        searchtext=request.form.get("s_text")
+        searchby=request.form.get("p_name")
+        searchtext=request.form.get("p_text")
         servname=Service_Info.query.all()
-        role1=0
-        role2=1
-        role3=2
-        status="approved"
-        if searchby=="services":
+        if searchby=="dates":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             #crequests=Customer_Service_Request.query.filter_by(service_status=searchtext).first()
-            return render_template("admin_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname)
-        elif searchby=="customers":
-            name="customers"
-            #customers=User_Info.query.filter_by().first()
-            customers=User_Info.query.all()
-            return render_template("admin_search.html",customers=customers,searchby=searchby)
-        elif searchby=="professionals":
-            name="professionals"
-            #ole=2
-            #professionals=User_Info.query.filter_by(role=int(role)).first()
-            professionals=User_Info.query.all()
-            return render_template("admin_search.html",professionals=professionals,searchby=searchby)
-        else:
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
+        elif searchby=="locations":
+            #name="locations"
             servname=Service_Info.query.all()
-            return render_template("admin_search.html",servicename=servname)
-        #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
-        
-    return render_template("admin_search.html",crequests=crequests)
-'''------------ Plotting graphs for admin dashboardd--------------------------------'''
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
+        elif searchby=="pincodes":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
+    #return render_template("professional_search.html",crequests=crequests,username=username,servname=servname,professional_id=professional_id)   
+    return render_template("professional_search.html",crequests=crequests,professional_id=professional_id)
+
+
+    
+    
+    
+    '''------------ Plotting graphs for admin dashboardd--------------------------------'''
 
 #plotting graph for admin dashbaord
 

@@ -26,7 +26,7 @@
             border-radius:10px;
             background-color:lightblue ;
             width: 525px;
-            height: 621px;
+            height: 620px;
             align-items: center;
             margin-inline: auto;
         }
@@ -65,9 +65,11 @@
     <div id="header">
     </div>
     <div id="main">
-        <form action="/professionalsignup" id="form" method="POST" enctype = "multipart/form-data">
+        <form action="/professionalprofileupdate/{{professional_id}}" id="form" method="POST" enctype = "multipart/form-data">
             <br>
-            <h1> Service Professional Signup</h1>
+            <h1> Edit Professional's Profile</h1>
+            <p style="font-style:italic;color:green;">ID : {{professional_id}}   , Email : {{service.email}}</p> 
+            <!--p style="font-style:italic;color:green;">Email : {{service.email}}</p-->
             <div>
                 <label for="email">Email ID (Username):</label>
                 <input type="email" id="email" name="s_email", placeholder="example@abc.com">
@@ -92,10 +94,6 @@
                 <label for="experience">Experience (in yrs):</label>
                 <input type="number" id="experience" name="s_exp">
             </div>
-            <div>
-                <label for="phonenumber">Phone Number:</label>
-                <input type="number" id="phonenumber" name="s_phone">
-            </div>
             <br>
             <div>
                 <label for="address">Address:</label>
@@ -104,7 +102,7 @@
             <div>
                 <label id="drp" for="customer_location">Location:</label>
                 <select name="customer_location" id="customer_location" row="16" cols="40">
-                    {% for entry in servicename %}
+                    {% for entry in servname %}
                     <option value="{{entry.location}}">{{entry.location}}</option>
                     {% endfor %}
                 </select>
@@ -119,11 +117,11 @@
             </div>
             <br>
             <div>
-                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to register">Register</button>
+                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to register">Update</button>
              </div>
              <br>
              <div>
-                <a style="font-size:17px;" id="anchor1" href="/login">Go Back</a>
+                <a style="font-size:17px;" id="anchor1" href="/professionaldashboard/{{professional_id}}">Go Back</a>
              </div>
              <div id="msg">
                 {{msg}}

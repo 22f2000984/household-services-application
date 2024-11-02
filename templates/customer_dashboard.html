@@ -93,6 +93,34 @@
             border-collapse: collapse ;
             font-size: 18px;
         }
+        #profile1 {
+            border:1px solid black;
+            border-radius: 10px;
+            width:150px;
+            text-align: center;
+            margin-left: 800px;
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 20px;
+            color:brown;
+        }
+        #profile {
+            border:1px solid black;
+            border-radius: 10px;
+            width:150px;
+            height:90px;
+            margin-top:10px;
+            margin-left:1100px;
+            font-style: italic;
+            font-size: 20px;
+            text-align:center;
+        }
+        #btn {
+            background:grey;
+            border:1px solid black;
+            border-radius:5px;
+            color:white;
+        }
     </style>
 
 </head>
@@ -111,7 +139,12 @@
         </nav>
     </div>
     <div id="main">
-        <div class="div1">
+        <div id="profile">
+            <button id="btn" style="margin-top:17px;"><a style="color:white;" href="/viewcustomerprofile/{{customer_id}}">View</a></button>
+            <button id="btn"><a style="color:white;"href="/viewcustomerprofile/{{customer_id}}/edit">Edit</a></button>
+            <p style="color:green;font-size:18px;">Profile details</p>
+        </div>
+        <div class="div1">    
             <p style="color:black;font-size:25px;">Available Household Services</p>
             
             <div id="div2">

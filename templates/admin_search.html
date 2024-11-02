@@ -98,8 +98,8 @@
         </form>
         {% if searchby=="professionals" %}
         <div>
-            <h2>Service Professionals List</h2>
-            <p style="color:red;">Admin may block/unblock professionals</p>
+            <h2 style="font-style:italic;color:blue">Service Professional's List</h2>
+            <h4 style="color:red;">(Admin may block/unblock professionals)</h4>
             <table id = "professionals-table">
                 <thead id="th">
                     <tr>
@@ -131,8 +131,8 @@
         </div>
     {% elif searchby=="customers" %}
         <div>
-            <h2>Customers list</h2>
-            <p style="color:red;">Admin may block/unblock customers</p>
+            <h2 style="font-style:italic;color:blue;">Customers list</h2>
+            <h4 style="color:red;">(Admin may block/unblock customers)</h4>
             <table id = "customer-table">
                 <thead id="th">
                     <tr>
@@ -162,7 +162,8 @@
 
     {% elif searchby=="services" %}
             <div>
-                <h2>Customer Service Requests ({{searchtext}})</h2>
+                <h2 style="font-style:italic;color:blue;">Customer Service Requests</h2>
+                <h4 style="font-style:italic;color:red;">(Status type: "{{searchtext}}"")</h4>
                 <table id = "servicerequest-table">
                     <thead id="th">
                         <tr>
@@ -199,9 +200,10 @@
                 </table>
             </div>
         {% else %}
-         <p>Done</p>
+         <!--p>Done</p-->
          <div>
-            <h2>Customer Service Requests All</h2>
+            <h2 style="font-style:italic;color:blue;">Customer Service Requests</h2>
+            <h4 style="font-style:italic;color:red;">(Status type: All)</h4>
             <table id = "servicerequest-table">
                 <thead id="th">
                     <tr>

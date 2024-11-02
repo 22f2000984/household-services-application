@@ -207,18 +207,26 @@
             </thead>
             <tbody id="td">
                 {% for entry in cservice %}
-                <tr>
-                    <td><a href="/viewcustomerservicerequests/{{entry.id}}">{{entry["id"]}}</a></td>
-                    <td>{{entry["service_id"]}}</td>
-                    <td>{{entry["professional_id"]}}</td>
-                    <td>{{entry["date_of_request"]}}</td>
-                    <td>{{entry["service_status"]}}</td>
-                    <td>
-                        <a href="/viewcustomerservicerequests/{{entry.id}}/accept">Accept /</a>
-                        <a href="/viewcustomerservicerequests/{{entry.id}}/reject">Reject /</a>
-                        <a href="/viewcustomerservicerequests/{{entry.id}}/close">Close</a>
-                    </td>
-                </tr>
+                    {% for usr in user %}
+                        {% if entry.professional_id==usr.id %}
+                            {% for servname in servicename %}
+                                {% if entry.service_id==servname.id%}
+                                    <tr>
+                                        <td><a href="/viewcustomerservicerequests/{{entry.id}}">{{entry["id"]}}</a></td>
+                                        <td>{{servname["servicename"]}}</td>
+                                        <td>{{usr["full_name"]}}</td>
+                                        <td>{{entry["date_of_request"]}}</td>
+                                        <td>{{entry["service_status"]}}</td>
+                                        <td>
+                                            <a href="/viewcustomerservicerequests/{{entry.id}}/accept">Accept /</a>
+                                            <a href="/viewcustomerservicerequests/{{entry.id}}/reject">Reject /</a>
+                                            <a href="/viewcustomerservicerequests/{{entry.id}}/close">Close</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             <tbody>
           </table>
