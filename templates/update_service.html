@@ -15,6 +15,11 @@
             color: red;
             font-style: italic;
         }
+        h4 {
+            text-align: center;
+            color: green;
+            font-style: italic;
+        }
         label {
             width:200px;
             display:inline-block;
@@ -28,7 +33,7 @@
             border-radius:10px;
             background-color:lightblue ;
             width: 500px;
-            height: 410px;
+            height: 482px;
             align-items: center;
             margin-inline: auto;
         }
@@ -60,7 +65,8 @@
     <div id="main">
         <form action="/editservice" id="form" method="POST">
             <br>
-            <h1>Update Service (Id :{{id}})</h1>
+            <h1>Update Service</h1>
+            <h4>Home Service Id - {{id}}, Service Name - {{servicename}}</h4>
             <div></div>
             <div>
                 <label for="service_id">Id:</label>
@@ -96,6 +102,19 @@
                 <label for="time_required">Time Required:</label>
                 <input type="text" id="time_required" name="time_required">
             </div>
+            <div>
+                <label for="city">City:</label>
+                <select name="city" id="city" row="16" cols="40">
+                    <option value="Delhi">Delhi</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Gurgaon">Gurgaon</option>
+                    <option value="Noida">Noida</option>
+                    <option value="Greater Noida">Greater Noida</option>
+                    <option value="bengaluru">Bengaluru</option>
+                    <option value="new">New</option>
+                </select>
             <br>
             <div>
                 <button type="submit" value="add">Update</button>

@@ -64,13 +64,21 @@
                 <th>Status(Requested/Accepted/Closed)</th>
             </tr>
         <tbody>
+            {% for usr in user %}
+            {% if usr.id==professional_id%}
+            {% for srv in servname %}
+            {% if srv.id == service.service_id %}
             <tr>
                 <td>{{service["id"]}}</td>
-                <td>{{service["service_id"]}}</td>
-                <td>{{service["professional_id"]}}</td>
+                <td>{{srv["servicename"]}}</td>
+                <td>{{usr["full_name"]}}</td>
                 <td>{{service["date_of_request"]}}</td>
                 <td>{{service["service_status"]}}</td>
             </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
         </tbody>
         </thead>
     </table>

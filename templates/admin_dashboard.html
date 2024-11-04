@@ -135,6 +135,7 @@
                     <th>Descriptin</th>
                     <th>Base Price</th>
                     <th>Time required</th>
+                    <th>Location</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -146,6 +147,7 @@
                     <td>{{entry["description"]}}</td>
                     <td>{{entry["baseprice"]}}</td>
                     <td>{{entry["time_required"]}}</td>
+                    <td>{{entry["city"]}}</td>
                     <td>
                         <a href="/viewservice/{{entry.id}}/edit" type="button">Edit /</a>
                         <a href="/viewservice/{{entry.id}}/delete" type="button">Delete</a>
@@ -192,7 +194,7 @@
             <tbody>
           </table>
           <br><br>
-          <div id="servicerequest"><h3>CUSTOMER'S Service Requests</h3></div>
+          <div id="servicerequest"><h3>CUSTOMER'S Service Requests (All)</h3></div>
           <br>
           <table id = "servicerequests-table">
             <thead id="th">

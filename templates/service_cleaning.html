@@ -133,7 +133,7 @@
     </div>
     <div id="main">
         <div id="dv1">
-            <h2>BEST CLEANING PACKAGES</h2>
+            <h2>BEST CLEANING PACKAGES (in {{customer_location}})</h2>
             <table>
                 <thead>
                     <tr>
@@ -141,18 +141,21 @@
                         <th>Service Name</th>
                         <th>Base Price</th>
                         <th>Service Type</th>
+                        <td>Location</td>
                         <th>Book the Service</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{customer_id}}
+                    {{customer_location}}
                     {% for entry in servicename%}
-                    {% if entry.service_type=="cleaning" %}
+                    {% if entry.service_type=="cleaning" and entry.city==customer_location %}
                     <tr>
                         <td>{{entry.id}}</td>
                         <td>{{entry.servicename}}</td>
                         <td>{{entry.baseprice}}</td>
                         <td>{{entry.service_type}}</td>
+                        <td>{{entry.city}}</td>
                         <td><button class="btn1"><a class="a1" href="/bookservice/{{entry.id}}/{{customer_id}}">Book</a></button></td>
                     </tr>
                     {% endif %}

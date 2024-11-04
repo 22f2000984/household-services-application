@@ -139,6 +139,7 @@
         </nav>
     </div>
     <div id="main">
+        <h4 style="font-style:italic;color:red" >Location - {{customer_location}}</h4>
         <div id="profile">
             <button id="btn" style="margin-top:17px;"><a style="color:white;" href="/viewcustomerprofile/{{customer_id}}">View</a></button>
             <button id="btn"><a style="color:white;"href="/viewcustomerprofile/{{customer_id}}/edit">Edit</a></button>
@@ -157,7 +158,6 @@
         </div>
         <div class="table">
             <br>
-            {{customer_id}}
             <h2 style="font-style:italic;color:blue">Customer's history for the services availed</h2>
             <table>
                 <thead id="th">
@@ -165,6 +165,7 @@
                         <th>ID</th>
                         <th>Service Name</th>
                         <th>Professional Name</th>
+                        <th>Customer Name </th>
                         <th>Phone No</th>
                         <th>Status</th>
                     </tr>
@@ -176,6 +177,7 @@
                         <td>{{entry.id}}</td>
                         <td>{{entry.service_id}}</td>
                         <td>{{entry.professional_id}}</td>
+                        <td>{{entry.customer_id}}</td>
                         <td>98700005</td>
                         <td>{{entry.service_status}}</td>
                     </tr>

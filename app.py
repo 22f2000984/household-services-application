@@ -38,6 +38,7 @@ class Service_Info(db.Model):
     baseprice=db.Column(db.Integer,nullable=False)
     time_required=db.Column(db.String,nullable=False)
     service_type=db.Column(db.String,nullable=False)
+    city=db.Column(db.String,nullable=False)
     #customer_service_req=db.relation("Customer_Service_Request",cascade="all,delete",backref="service_info",lazy=True)
     
 class Customer_Service_Request(db.Model):
@@ -168,16 +169,16 @@ def admin_search():
         role2=1
         role3=2
         status="approved"
-        if searchby=="services":
+        if searchby=="option1":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             return render_template("admin_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname)
-        elif searchby=="customers":
+        elif searchby=="option2":
             name="customers"
             customers=User_Info.query.all()
             return render_template("admin_search.html",customers=customers,searchby=searchby)
-        elif searchby=="professionals":
+        elif searchby=="option3":
             name="professionals"
             professionals=User_Info.query.all()
             return render_template("admin_search.html",professionals=professionals,searchby=searchby)
@@ -201,7 +202,8 @@ def edit_service(id):
 # Continuation... 
 @app.route("/updateservice/<id>",methods=["GET","POST"])
 def update_service(id):
-    return render_template("update_service.html",id=id)
+    service = Service_Info.query.filter_by(id=id).first()
+    return render_template("update_service.html",id=id,servicename=service.servicename)
 
 #testing route
 @app.route("/hello/<id>")
@@ -219,12 +221,14 @@ def ed_service():
         baseprice=request.form.get("base_price")
         timerequired=request.form.get("time_required")
         servicetype=request.form.get("service_type")
+        city=request.form.get("city")
         prfser=Service_Info.query.filter_by(id=ids).first()
         prfser.servicename=servicename1
         prfser.description=description
         prfser.baseprice=baseprice
         prfser.time_required=timerequired
         prfser.service_type=servicetype
+        prfser.city=city
         
         db.session.commit()
         return redirect("/admindashboard")
@@ -274,6 +278,7 @@ def approve_professional(id):
 def reject_professional(id):
   service = User_Info.query.filter_by(id=id).first()
   service.status="rejected"
+  service.remarks="Admin rejected"
   db.session.commit()
   return redirect("/admindashboard")
 
@@ -332,7 +337,9 @@ def plot_graph(abc):
 @app.route("/viewcustomerservicerequests/<int:id>", methods=["GET"])
 def customer_service_requests(id):
     service = Customer_Service_Request.query.filter_by(id=id).first()
-    return render_template("view_customerservicerequests.html",service=service)
+    servname=Service_Info.query.all()
+    user=User_Info.query.all()
+    return render_template("view_customerservicerequests.html",servname=servname,service=service,customer_id=service.customer_id,professional_id=service.professional_id,user=user)
 
 #Approve customer's home service request from admin dashboard
 @app.route("/viewcustomerservicerequests/<int:id>/accept", methods=["GET", "POST"])
@@ -367,14 +374,22 @@ def add_service():
         baseprice=request.form.get("base_price")
         timerequired=request.form.get("time_required")
         servicetype=request.form.get("service_type")
+        city=request.form.get("city")
         service=Service_Info.query.filter_by(servicename=servicename).first()
-        if not service:
-            new_service=Service_Info(servicename=servicename,description=description,baseprice=baseprice,time_required=timerequired,service_type=servicetype)
+        location=Service_Info.query.filter_by(city=city).first()
+        new_service=Service_Info(servicename=servicename,description=description,baseprice=baseprice,time_required=timerequired,service_type=servicetype,city=city)
+        db.session.add(new_service)
+        db.session.commit()
+        return redirect("/admindashboard")
+        '''
+        if not service and not location:
+            new_service=Service_Info(servicename=servicename,description=description,baseprice=baseprice,time_required=timerequired,service_type=servicetype,city=city)
             db.session.add(new_service)
             db.session.commit()
             return redirect("/admindashboard")
         elif service:
             return render_template('/new_service.html',msg='"Service exists"')
+        '''
     return render_template("new_service.html",msg="")
 
  #Approve(unblock) professional from admin dashboard search
@@ -402,18 +417,21 @@ def customer_dashboard():
     name = request.args['customer_name']
     id = request.args['customer_id']
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
-    #user=User_Info.query.all()
+    user=User_Info.query.filter_by(id=id).first()
     #servname=Service_Info.query.all()
+    customer_location=user.location
     customer_service_request=Customer_Service_Request.query.all()
     #return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,user=user,servname=servname)
-    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,name=name)
+    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,name=user.full_name,customer_location=customer_location)
 
 #Go back to customer dashboard
 @app.route("/customerdashboard/<int:id>")
 def customer_dashboard1(id):
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
     customer_service_request=Customer_Service_Request.query.all()
-    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request)
+    user=User_Info.query.filter_by(id=id).first()
+    customer_location=user.location
+    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,customer_location=customer_location)
 
 #View customer's prfile from customer dashboard
 @app.route("/viewcustomerprofile/<int:id>", methods=["GET", "POST"])
@@ -466,7 +484,7 @@ def home_cleaning(customer_id):
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="cleaning"
     servicename=Service_Info.query.all()
-    return render_template("service_cleaning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_cleaning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/carpainter/<customer_id>",methods=["GET","POST"])
 def home_carpainter(customer_id):
@@ -474,7 +492,7 @@ def home_carpainter(customer_id):
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="carpainter"
     servicename=Service_Info.query.all()
-    return render_template("service_carpainter.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_carpainter.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/plumbing/<customer_id>",methods=["GET","POST"])
 def home_plumbing(customer_id):
@@ -482,14 +500,14 @@ def home_plumbing(customer_id):
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="plumbing"
     servicename=Service_Info.query.all()
-    return render_template("service_plumbing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_plumbing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/acservicing/<customer_id>",methods=["GET","POST"])
 def home_acservicing(customer_id):
-    ustomer_id=customer_id
+    customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_acservicing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_acservicing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/painting/<customer_id>",methods=["GET","POST"])
 def home_painting(customer_id):   
@@ -497,22 +515,32 @@ def home_painting(customer_id):
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="plumbing"
     servicename=Service_Info.query.all()
-    return render_template("service_painting.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_painting.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/gardening/<customer_id>",methods=["GET","POST"])
 def home_gardening(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_gardening.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_gardening.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
 
 @app.route("/saloning/<customer_id>",methods=["GET","POST"])
 def home_saloning(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_saloning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
+    return render_template("service_saloning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,customer_location=customer_name.location)
  
+#  Location based servicing 
+
+@app.route("/location/<int:customer_id>/searchtext",methods=["GET","POST"])
+def location_servicing(customer_id,searchtext):
+    #return "searchtext"
+    customer_id=customer_id
+    searchtext=searchtext
+    customer_name=User_Info.query.filter_by(id=customer_id).first()
+    servicename=Service_Info.query.all()
+    return render_template("location_servicing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id,searchtext=searchtext)
 
 #Book home service from customer dashboard
 @app.route("/bookservice/<int:id>/<int:customer_id>")
@@ -595,7 +623,7 @@ def customer_search(customer_id):
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             #return render_template("service_cleaning.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,customer_id=customer_id)
-            return redirect(url_for(".home_cleaning",customer_id=customer_id))
+            return redirect(url_for(".home_cleaning",customer_id=customer_id,crequests=crequests,username=username))
         elif searchby=="option1" and searchtext=="carpainter":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
@@ -606,7 +634,7 @@ def customer_search(customer_id):
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             return redirect(url_for(".home_plumbing",customer_id=customer_id))
-        elif searchby=="soption1" and searchtext=="acservicing":
+        elif searchby=="option1" and searchtext=="acservicing":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
@@ -625,7 +653,14 @@ def customer_search(customer_id):
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            return redirect(url_for(".home_saloning",customer_id=customer_id))  
+            return redirect(url_for(".home_saloning",customer_id=customer_id))
+        elif searchby=="option2":
+            searchtext=searchtext
+            servicename=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            #return redirect(url_for(".location_servicing",customer_id=customer_id,srchtxt=searchtext)) 
+            return render_template("location_servicing.html",servicename=servicename,customer_id=customer_id,searchtext=searchtext)
     return render_template("customer_search.html",crequests=crequests,customer_id=customer_id)
 
     
@@ -772,17 +807,17 @@ def professional_search(professional_id):
         searchby=request.form.get("p_name")
         searchtext=request.form.get("p_text")
         servname=Service_Info.query.all()
-        if searchby=="dates":
+        if searchby=="option1":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
-        elif searchby=="locations":
+        elif searchby=="option2":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
             return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
-        elif searchby=="pincodes":
+        elif searchby=="option3":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()

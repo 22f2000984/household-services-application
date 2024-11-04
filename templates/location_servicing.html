@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carpainter Page</title>
+    <title>Location Search Page</title>
     <style>
         * {
             text-decoration: none;
@@ -70,13 +70,8 @@
             background-color: gray;
             text-decoration: none;
             font-size:20px;
-        }
-        .btn1 {
-            background:gray;
-            border: 1px outset buttonborder;
-            border-radius: 2px;
-            color:white;
-            height:25px;
+
+
         }
         a {
             font-style: italic;
@@ -89,16 +84,17 @@
             margin-left: 500px;
             font-size: 20px;
         }
+        
         table, th, td {
             text-align: center;
             font-style: italic;
             width:1000px;
-            margin-left: 80px;
+            margin-left: 50px;
             border-radius: 20px;
             border: 1px solid black;
             border-collapse: collapse ;
             font-size: 18px;
-            margin-bottom:20px;
+            margin-bottom: 20px;
         }
         #dv1 {
             border:1px solid black;
@@ -106,6 +102,13 @@
             background-color:white;
             margin-top:20px;
             height:auto;
+        }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 2px;
+            color:white;
+            height:25px;
         }
     </style>
 
@@ -121,13 +124,13 @@
                     <li><a href="/customersummary/{{customer_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
+                {{msg}}
             </div>
         </nav>
     </div>
     <div id="main">
         <div id="dv1">
-            <h2>BEST CARPAINTER PACKAGES (in {{customer_location}})</h2>
-            {{customer_location}}
+            <h2>Best Servicing Packages (in {{searchtext}})</h2>
             <table>
                 <thead>
                     <tr>
@@ -140,8 +143,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for entry in servicename%}
-                    {% if entry.service_type=="carpainter" and entry.city==customer_location %}
+                    {% for entry in servicename %}
+                    {% if entry.city==searchtext%}
                     <tr>
                         <td>{{entry.id}}</td>
                         <td>{{entry.servicename}}</td>
@@ -155,7 +158,6 @@
                 </tbody>
             </table>
         </div>
-    
     </div>
     <div id="footer">
 

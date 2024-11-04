@@ -85,18 +85,47 @@
     <div id="main">
         <form action="/adminsearch" id="form" method="POST">
             <div id="search">
-                <label for="servicename">Search by :</label>
-                <select name="s_name" id="servicename" row="4" cols="21">
-                    <option value="services">Home Service requests</option>
-                    <option value="customers">Customers</option>
-                    <option value="professionals">Professionals</option>
+                <label for="dropdown1">Search by :</label>
+                <select name="s_name" id="dropdown1"onchange="populateDropdown2()" row="4" cols="21">
+                    <option value="">Select an option </option>
+                    <option value="option1">Home Service requests</option>
+                    <option value="option2">Customers</option>
+                    <option value="option3">Professionals</option>
                 </select>
-                <label for="name"></label>
-                <input type="text" id="searchtext" name="s_text" placeholder="search text">
-                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
+                <label for="dropdown2"></label>
+                    <select name ="s_text" id ="dropdown2">
+                        <option value="">Select an option </option>
+                    </select>
+                    <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
+                </div>
+                <script>
+                    const dropdown1 = document.getElementById("dropdown1");
+                    const dropdown2 = document.getElementById("dropdown2");
+            
+                    const optionsMap = {
+                    option1: ["requested", "accepted", "closed"],
+                    option2: ["A","B"],
+                    option3: ["C","D"],
+                    };
+            
+                    function populateDropdown2() {
+                    let selectedOption = dropdown1.value;
+                    dropdown2.innerHTML = "<option value=''>Select an option</option>";
+            
+                    if (selectedOption !== "") {
+                        let options = optionsMap[selectedOption];
+                        for (let i = 0; i < options.length; i++) {
+                        let optionElement = document.createElement("option");
+                        optionElement.value = options[i];
+                        optionElement.text = options[i];
+                        dropdown2.appendChild(optionElement);
+                        }
+                    }
+                    }
+                </script>
             </div>
         </form>
-        {% if searchby=="professionals" %}
+        {% if searchby=="option3" %}
         <div>
             <h2 style="font-style:italic;color:blue">Service Professional's List</h2>
             <h4 style="color:red;">(Admin may block/unblock professionals)</h4>
@@ -129,7 +158,7 @@
                 <tbody>
             </table>
         </div>
-    {% elif searchby=="customers" %}
+    {% elif searchby=="option2" %}
         <div>
             <h2 style="font-style:italic;color:blue;">Customers list</h2>
             <h4 style="color:red;">(Admin may block/unblock customers)</h4>
@@ -160,7 +189,7 @@
                     {% endif %}
                     {% endfor %}
 
-    {% elif searchby=="services" %}
+    {% elif searchby=="option1" %}
             <div>
                 <h2 style="font-style:italic;color:blue;">Customer Service Requests</h2>
                 <h4 style="font-style:italic;color:red;">(Status type: "{{searchtext}}"")</h4>
@@ -186,7 +215,7 @@
                                                     <td>{{entry["id"]}}</td>
                                                     <td>{{entry["customer_id"]}}</td>
                                                     <td>{{et["servicename"]}}</td>
-                                                    <td>{{ent["full_name"]}}</td>
+                                                    <td>{{entry["professional_id"]}}</td>
                                                     <td>{{entry["date_of_request"]}}</td>
                                                     <td>{{entry["service_status"]}}</td>
                                                 </tr>

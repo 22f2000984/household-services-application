@@ -86,18 +86,47 @@
     <div id="main">
         <form action="/professionalsearch/{{professional_id}}" id="form" method="POST">
             <div id="search">
-                <label for="servicename">Search by :</label>
-                <select name="p_name" id="servicename" row="4" cols="21">
-                    <option value="dates">Date</option>
-                    <option value="locations">Location</option>
-                    <option value="pincodes">Pincode</option>
+                <label for="dropdown1">Search by :</label>
+                <select name="p_name" id="dropdown1" onchange="populateDropdown2()" row="4" cols="21">
+                    <option value="">Select an option</option>
+                    <option value="option1">Date</option>
+                    <option value="option2">Location</option>
+                    <option value="option3">Pincode</option>
                 </select>
-                <label for="name"></label>
-                <input type="text" id="searchtext" name="p_text" placeholder="yyyy-mm-dd or Delhi or Pincode">
+                <label for="dropdown2"></label>
+                <select name ="p_text" id ="dropdown2">
+                    <option value="">Select an option </option>
+                </select>
                 <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
             </div>
+            <script>
+                const dropdown1 = document.getElementById("dropdown1");
+                const dropdown2 = document.getElementById("dropdown2");
+        
+                const optionsMap = {
+                option1: [],
+                option2: ["Delhi", "Mumbai", "Chennai", "Kolkata", "Gurgaon", "Noida", "Greater Noida", "Bengaluru"],
+                option3: ["110001", "122001", "201301", "201009", "400001", "600001", "700001", "560001"],
+                };
+        
+                function populateDropdown2() {
+                let selectedOption = dropdown1.value;
+                dropdown2.innerHTML = "<option value=''>Select an option</option>";
+        
+                if (selectedOption !== "") {
+                    let options = optionsMap[selectedOption];
+                    for (let i = 0; i < options.length; i++) {
+                    let optionElement = document.createElement("option");
+                    optionElement.value = options[i];
+                    optionElement.text = options[i];
+                    dropdown2.appendChild(optionElement);
+                    }
+                }
+                }
+            </script>
+         </div>
         </form>
-        {% if searchby=="dates" %}
+        {% if searchby=="option1" %}
         <div>
             <h2 style="font-style:italic;color:blrown">Search Results (based on date)</h2>
             <table id = "professionals-table">
@@ -118,7 +147,7 @@
                     {% for usr in username %}
                     {%if entry.customer_id==usr.id %}
                     <tr>
-                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td><a href="#">{{entry["id"]}}<a/></td>
                         <td>{{usr["full_name"]}}</td>
                         <td>{{entry["professional_id"]}}</td>
                         <td>{{usr["phone_number"]}}</td>
@@ -133,9 +162,10 @@
                 <tbody>
             </table>
         </div>
-    {% elif searchby=="locations" %}
+    {% elif searchby== "option2" %}
         <div>
-            <h2 style="font-style:italic;color:brown;">Search Results (based on location)</h2>
+            <h2 style="font-style:italic;color:brown;">Service requested completed by professional (based on location)</h2>
+            {{searchtext}}, {{professional_id}}, {{searchby}}
             <table id = "location-table">
                 <thead id="th">
                     <tr>
@@ -154,7 +184,7 @@
                     {% for usr in username %}
                     {%if entry.customer_id==usr.id %}
                     <tr>
-                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td><a href="#">{{entry["id"]}}<a/></td>
                         <td>{{usr["full_name"]}}</td>
                         <td>{{entry["professional_id"]}}</td>
                         <td>{{usr["phone_number"]}}</td>
@@ -170,9 +200,9 @@
             </table>
         </div>
 
-    {% elif searchby=="pincodes" %}
+    {% elif searchby=="option3" %}
         <div>
-            <h2 style="font-style:italic;color:brown;">Search Results (based on pincodes)</h2>
+            <h2 style="font-style:italic;color:brown;">Service requested completed by professional (based on pincodes)</h2>
             <table id = "location-table">
                 <thead id="th">
                     <tr>
@@ -187,11 +217,11 @@
                 </thead>
                 <tbody id="td">
                     {% for entry in crequests %}
-                    {% if entry.pincode==searchtext and entry.professional_id==professional_id %}
+                    {% if entry.professional_id==professional_id %}
                     {% for usr in username %}
-                    {%if entry.customer_id==usr.id %}
+                    {%if usr.id==professional_id %}
                     <tr>
-                        <td><a href="/viewprofessional/{{entry.id}}">{{entry["id"]}}<a/></td>
+                        <td><a href="#">{{entry["id"]}}<a/></td>
                         <td>{{usr["full_name"]}}</td>
                         <td>{{entry["professional_id"]}}</td>
                         <td>{{usr["phone_number"]}}</td>
@@ -244,9 +274,8 @@
                     {% endfor %}
                 <tbody>
             </table>
-         </div>    
+         </div>-->    
     {% endif %}
-         -->
     <div id="footer">
 
     </div>
