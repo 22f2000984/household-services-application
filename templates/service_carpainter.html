@@ -70,8 +70,13 @@
             background-color: gray;
             text-decoration: none;
             font-size:20px;
-
-
+        }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 2px;
+            color:white;
+            height:25px;
         }
         a {
             font-style: italic;
@@ -111,12 +116,11 @@
             <div class="navdiv">
                 <div class="logo"><h3>Welcome {{customer_name}}(Customer Dashboard)</h3></div>
                 <ul>
-                    <li><a href="#">Home |</a></li>
-                    <li><a href="/customersearch">Search |</a></li>
-                    <li><a href="/customersummary">Summary |</a></li>
+                    <li><a href="/customerdashboard/{{customer_id}}">Home |</a></li>
+                    <li><a href="/customersearch/{{customer_id}}">Search |</a></li>
+                    <li><a href="/customersummary/{{customer_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
-                {{msg}}
             </div>
         </nav>
     </div>
@@ -141,7 +145,7 @@
                         <td>{{entry.servicename}}</td>
                         <td>{{entry.baseprice}}</td>
                         <td>{{entry.service_type}}</td>
-                        <td><button>Book</button></td>
+                        <td><button class="btn1"><a class="a1" href="/bookservice/{{entry.id}}/{{customer_id}}">Book</a></button></td>
                     </tr>
                     {% endif %}
                     {% endfor %}

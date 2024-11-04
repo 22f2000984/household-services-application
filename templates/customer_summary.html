@@ -38,6 +38,31 @@
             margin-right: 5px;
             font-weight: bold;
         }
+  
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 5px;
+            border:1px solid black;
+            margin-top:50px;
+            margin-left:100px;
+            border-radius:20px;
+            height:460px;
+            width:500px;
+          }
+          
+          /* Clearfix (clear floats) */
+          .row::after {
+            content: "";
+            clear: both;
+            display: table;
+          }
+
+          h3 {
+            font-style:italic;
+            color:blue;
+            text-align:center;
+          }
 
     </style>
 
@@ -46,18 +71,28 @@
     <div id="header">
         <nav class="navbar">
             <div class="navdiv">
-                <div class="logo">Welcome to Customer</div>
+                <div class="logo">Welcome {{customer_name}} (Customer dashboard) </div>
                 <ul>
-                    <li><a href="customerhome.html">Home |</a></li>
-                    <li><a href="customersearch.html">Search |</a></li>
-                    <li><a href="customersummary.html">Summary |</a></li>
-                    <li><a href="index.html">Logout</a></li>
+                    <li><a href="/customerdashboard/{{customer_id}}">Home |</a></li>
+                    <li><a href="/customersearch/{{customer_id}}">Search |</a></li>
+                    <li><a href="#">Summary |</a></li>
+                    <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     <div id="main">
-
+        {{professional_id}}
+        <h2 style="text-align:center;color:brown;font-style:italic;">SUMMARIES</h2>
+        <div id="row">
+            <!--div class="column">
+                <h3>Reviews/Ratings</h3>
+                <img src="/static/images/customer_plot_pie.png" alt="Image-3" height="400px" width="500px"/>
+            </div-->
+            <div class="column">
+                <h3>Service Request Summary</h3>
+                <img src="/static/images/customer_plot_bar.png" alt="Image-3" height="400px" width="500px"/>
+            </div>
     </div>
     <div id="footer">
 

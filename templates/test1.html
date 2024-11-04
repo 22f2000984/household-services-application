@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+      initial-scale=1.0">
+    <title>Cascading Dropdown Example
+    </title>
+    <style>
+        body {
+            font-family: Arial,
+                sans-serif;
+        }
+
+        select {
+            margin: 10px 0;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <label for="country">
+        Country:</label>
+    <select id="country">
+        <option value="">
+            Select a country
+        </option>
+        <option value="usa">
+            USA</option>
+        <option value="canada">
+            Canada</option>
+    </select>
+    <label for="state">
+        State/Province:</label>
+    <select id="state">
+        <option value="">
+            Select a state/province
+        </option>
+    </select>
+    <script>
+        const states = {
+            usa: ['California', 'Florida', 'New York'],
+            canada: ['Ontario', 'Quebec', 'British Columbia']
+        };
+        document.getElementById('country').
+            addEventListener('change', function () {
+                const country = this.value;
+                const stateDropdown =
+                    document.getElementById('state');
+                stateDropdown.innerHTML =
+                    '<option value="">Select a state / province</option > ';
+                if (states[country]) {
+                    states[country].forEach(state => {
+                        const option =
+                            document.createElement('option');
+                        option.value =
+                            state.toLowerCase().replace(/\s+/g, '-');
+                        option.textContent = state;
+                        stateDropdown.appendChild(option);
+                    });
+                }
+            });
+    </script>
+</body>
+
+</html>

@@ -84,48 +84,45 @@
         </nav>
     </div>
     <div id="main">
-
         <form action="/customersearch/{{customer_id}}" id="form" method="POST">
             <div id="search">
-                    <label for="dropdown1">Search by :</label>
-                    <select name="c_name" id="dropdown1" onchange="populateDropdown2()" row="4" cols="21">
-                        <option value="">Select an option </option>
-                        <option value="option1">Service Name</option>
-                        <option value="option2">Location</option>
-                        <option value="option3">Pincode</option>
-                    </select>
-                    <label for="dropdown2"></label>
-                    <select name ="c_text" id ="dropdown2">
-                        <option value="">Select an option </option>
-                    </select>
-                    <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
-                </div>
-                <script>
-                    const dropdown1 = document.getElementById("dropdown1");
-                    const dropdown2 = document.getElementById("dropdown2");
-            
-                    const optionsMap = {
-                    option1: ["carpainter", "cleaning", "plumbing", "acservicing", "painting", "gardening", "saloning"],
-                    option2: ["Delhi", "Mumbai", "Chennai", "Kolkata", "Gurgaon", "Noida", "Greater Noida"],
-                    option3: ["110000", "44002", "22003", "330009"],
-                    };
-            
-                    function populateDropdown2() {
-                    let selectedOption = dropdown1.value;
-                    dropdown2.innerHTML = "<option value=''>Select an option</option>";
-            
-                    if (selectedOption !== "") {
-                        let options = optionsMap[selectedOption];
-                        for (let i = 0; i < options.length; i++) {
-                        let optionElement = document.createElement("option");
-                        optionElement.value = options[i];
-                        optionElement.text = options[i];
-                        dropdown2.appendChild(optionElement);
-                        }
-                    }
-                    }
-                </script>
+                <label for="servicename">Search by :</label>
+                <select name="c_name" id="dropdown1" onchange="populateDropdown2()" row="4" cols="21">
+                    <option value="">Select an option </option>
+                    <option value="option1">Service Name</option>
+                    <option value="option2">Location</option>
+                    <option value="option3">Pincode</option>
+                </select>
+                <select name ="searchtext" id ="dropdown2">
+                    <option value="">Select an option </option>
+                </select>
+                <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
             </div>
+            <script>
+                const dropdown1 = document.getElementById("dropdown1");
+                const dropdown2 = document.getElementById("dropdown2");
+        
+                const optionsMap = {
+                option1: ["carpainer", "cleaning", "plumbing", "acservicing", "painting", "gardening", "saloning"],
+                option2: ["Delhi", "Mumbai", "Chennai", "Kolkata", "Gurgaon", "Noida", "Greater Noida"],
+                option3: ["110000", "44002", "22003", "330009"],
+                };
+        
+                function populateDropdown2() {
+                let selectedOption = dropdown1.value;
+                dropdown2.innerHTML = "<option value=''>Select an option</option>";
+        
+                if (selectedOption !== "") {
+                    let options = optionsMap[selectedOption];
+                    for (let i = 0; i < options.length; i++) {
+                    let optionElement = document.createElement("option");
+                    optionElement.value = options[i];
+                    optionElement.text = options[i];
+                    dropdown2.appendChild(optionElement);
+                    }
+                }
+                }
+            </script>
         </form>
         {% if searchby=="servicename" and searchtext=="cleaning" %}
         <div>

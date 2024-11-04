@@ -128,11 +128,11 @@
     <div id="header">
         <nav class="navbar">
             <div class="navdiv">
-                <div class="logo"><h3>Welcome (Customer Dashboard)</h3></div>
+                <div class="logo"><h3>Welcome {{name}} (Customer Dashboard)</h3></div>
                 <ul>
                     <li><a href="#">Home |</a></li>
-                    <li><a href="/customersearch">Search |</a></li>
-                    <li><a href="/customersummary">Summary |</a></li>
+                    <li><a href="/customersearch/{{customer_id}}">Search |</a></li>
+                    <li><a href="/customersummary/{{customer_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
             </div>
@@ -157,7 +157,8 @@
         </div>
         <div class="table">
             <br>
-            <h2>Customer Service History {{customer_id}}</h2>
+            {{customer_id}}
+            <h2 style="font-style:italic;color:blue">Customer's history for the services availed</h2>
             <table>
                 <thead id="th">
                     <tr>
@@ -170,7 +171,7 @@
                 </thead>
                 <tbody>
                     {% for entry in customer_service_request %}
-                    {% if entry.customer_id == 2 %}
+                    {% if entry.customer_id == customer_id %}
                     <tr>
                         <td>{{entry.id}}</td>
                         <td>{{entry.service_id}}</td>

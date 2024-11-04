@@ -1,19 +1,12 @@
 import os
 from flask import Flask, render_template, request, redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
-from fileinput import filename
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-import io
-import base64
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-import seaborn as sns
-
 from datetime import date
 
 app=Flask(__name__)
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join( current_dir, "database.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///household.sqlite3"
 
 db = SQLAlchemy(app)
@@ -96,12 +89,10 @@ def user_login():
             return render_template('login.html',msg='"Invalid credentials, try again"')
     return render_template('login.html',msg="")
 
-# Route and function for cutomer signup 
+# Customer signup 
 @app.route("/customersignup", methods=['GET', 'POST'])
 def customer_signup():
     usr=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
-    #usr=User_Info.query.all()
-    #customerrequest=Customer_Service_Request.query.filter_by(customer_id=id).first()
     if request.method=='POST':
         email=request.form.get("c_email")
         pwd=request.form.get("c_password")
@@ -117,18 +108,15 @@ def customer_signup():
             db.session.add(new_user)
             db.session.commit()
             return redirect("/login")
-            #render_template("customer_signup.html",msg="Professional registered successfully")
         elif usr:
             return render_template('customer_signup.html',msg='"Customer exists"')
     return render_template("customer_signup.html",msg="",usr=usr)
 
-# Route for service professional signup 
+# Service professional signup 
 @app.route("/professionalsignup", methods=["GET","POST"])
 def serviceprofessional_signup():
-    #servname=Service_Info.query.all()
     pservicename=Service_Info.query.all()
     servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
-    #pservicename=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
     if request.method=='POST':
         f = request.files['file'] 
         f.save(f.filename)
@@ -147,7 +135,6 @@ def serviceprofessional_signup():
             new_professional=User_Info(email=email,full_name=fname,user_name=uname,service_name=sname,experience=sexp,pwd=pwd,add=add,pincode=pin,role=2,status="requested",location=location,reviews="None",phone_number=sphone)
             db.session.add(new_professional)
             db.session.commit()
-            #return redirect("/login")
             return render_template('professional_signup.html',msg='"Service Professional registered successfully"')
         elif usr:
             return render_template('professional_signup.html',msg='"Service Professional exists"',servicename=servname,pservicename=pservicename)
@@ -156,10 +143,9 @@ def serviceprofessional_signup():
 
 '''--------------------------Admin section---------------------------------------------------'''
 
-#Route for admin dashboard
+#Admin dashboard
 @app.route("/admindashboard")
 def admin_dashboard():
-    #name = request.args['admin_name']
     crole=1
     prole=2
     status="requested"
@@ -167,16 +153,14 @@ def admin_dashboard():
     professional=User_Info.query.filter_by(role=prole,status=status)
     user=User_Info.query.all()
     customerservicerequests=Customer_Service_Request.query.all()
-    #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
     return render_template("admin_dashboard.html",servicename=servname,professional=professional,cservice=customerservicerequests,user=user)
 
-#Route to admin search
+#Admin search page
 @app.route("/adminsearch",methods=["GET","POST"])
 def admin_search():
     servname=Service_Info.query.all()
     crequests=Customer_Service_Request.query.all()
     if request.method=="POST":
-        #name = request.args['admin_name']
         searchby=request.form.get("s_name")
         searchtext=request.form.get("s_text")
         servname=Service_Info.query.all()
@@ -188,42 +172,37 @@ def admin_search():
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            #crequests=Customer_Service_Request.query.filter_by(service_status=searchtext).first()
             return render_template("admin_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname)
         elif searchby=="customers":
             name="customers"
-            #customers=User_Info.query.filter_by().first()
             customers=User_Info.query.all()
             return render_template("admin_search.html",customers=customers,searchby=searchby)
         elif searchby=="professionals":
             name="professionals"
-            #ole=2
-            #professionals=User_Info.query.filter_by(role=int(role)).first()
             professionals=User_Info.query.all()
             return render_template("admin_search.html",professionals=professionals,searchby=searchby)
         else:
             servname=Service_Info.query.all()
             return render_template("admin_search.html",servicename=servname)
-        #return render_template("admin_dashboard.html", name=name,servicename=servname,professional=professional)
         
     return render_template("admin_search.html",crequests=crequests)
-    #return render_template("admin_search.html",servicename=servname)
 
-#Route for new service
+#Add new home service from admindashboard
 @app.route("/newservice")
 def new_service():
-    #msg = request.args['msg']
     return render_template("new_service.html")
 
 
-#-----------------
+#Edit home services
 @app.route("/viewservice/<int:id>/edit", methods=["GET", "POST"])
 def edit_service(id):
     service = Service_Info.query.filter_by(id=id).first()
-    #print(service.id)
-    #return redirect(url_for(".update_service",id=service.id))
     return redirect(url_for(".update_service",id=id))
-    #return redirect("editservice")
+# Continuation... 
+@app.route("/updateservice/<id>",methods=["GET","POST"])
+def update_service(id):
+    return render_template("update_service.html",id=id)
+
 #testing route
 @app.route("/hello/<id>")
 def update_service1(id):
@@ -233,10 +212,7 @@ def update_service1(id):
 ######################
 @app.route("/editservice",methods=["GET","POST"])
 def ed_service():
-    #ids = request.args.get('identity')
-    #prfser=Service_Info.query.filter_by(id=14).first()
     if request.method =="POST":
-        #age=int(id)
         ids=request.form.get("service_id")
         servicename1=request.form.get("service_name")
         description=request.form.get("description")
@@ -251,22 +227,18 @@ def ed_service():
         prfser.service_type=servicetype
         
         db.session.commit()
-        #return f'<b>Updated successfully {ids}</b>'
         return redirect("/admindashboard")
 
 ################################
-#Route for new service
-@app.route("/updateservice/<id>",methods=["GET","POST"])
-def update_service(id):
-    return render_template("update_service.html",id=id)
 
-#Route to view service details
+
+#View home service details from admin dashborad
 @app.route("/viewservice/<int:id>", methods=["GET"])
 def view_service(id):
     service = Service_Info.query.filter_by(id=id).first()
     return render_template("view_service.html",service=service)
 
-#Route to delete service from admin dashboard
+#Delete home service from admin dashboard
 @app.route("/viewservice/<int:id>/delete", methods=["GET", "POST"])
 def delete_service(id):
   service = Service_Info.query.filter_by(id=id).first()
@@ -275,8 +247,7 @@ def delete_service(id):
   return redirect("/admindashboard")
 
 
-#Route to delete professional's registration
-
+#Delete service professional's registration from admin dashboard
 @app.route("/viewprofessional/<int:id>/delete", methods=["GET", "POST"])
 def delete_professional(id):
   service = User_Info.query.filter_by(id=id).first()
@@ -284,35 +255,29 @@ def delete_professional(id):
   db.session.commit()
   return redirect("/admindashboard")
 
-# Route to view professional's details
-
-#Route to approve service professional's registration request from admin dashboard
+#View service professional's registration request from admin dashboard
 @app.route("/viewprofessional/<int:id>", methods=["GET", "POST"])
 def view_professional(id):
   service = User_Info.query.filter_by(id=id).first()
   return render_template ("view_professional.html",service=service)
-  #return redirect("/admindashboard")
 
-#Route to approve service professional's registration request from admin dashboard
+#Approve service professional's registration request from admin dashboard
 @app.route("/viewprofessional/<int:id>/approve", methods=["GET", "POST"])
 def approve_professional(id):
   service = User_Info.query.filter_by(id=id).first()
   service.status="approved"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/admindashboard")
 
-#Route to reject service professional's registration request from admin dashboard
+#Reject service professional's registration request from admin dashboard
 @app.route("/viewprofessional/<int:id>/reject", methods=["GET", "POST"])
 def reject_professional(id):
   service = User_Info.query.filter_by(id=id).first()
   service.status="rejected"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/admindashboard")
 
-# Admin summary 
-
+# Summary report (pie/bar charts) from admin dashboard 
 @app.route("/adminsummary", methods=["GET","POST"])
 def admin_summary():
     path=os.path.join('static', 'images', 'plot_pie.png')
@@ -352,7 +317,6 @@ def plot_graph(abc):
                 D1['Poor']+=1
             elif entry.ratings=="average":
                 D1['Average']+=1
-            #elif entry.ratings=="excellent":
             else:
                 D1['Excellent']+=1
                 
@@ -364,40 +328,37 @@ def plot_graph(abc):
         return plt.show()
 
     
-#Route to view customer service requests
+#View customer's home service requests from admin dashboard
 @app.route("/viewcustomerservicerequests/<int:id>", methods=["GET"])
 def customer_service_requests(id):
     service = Customer_Service_Request.query.filter_by(id=id).first()
     return render_template("view_customerservicerequests.html",service=service)
 
-#Route to approve service professional's registration request from admin dashboard
+#Approve customer's home service request from admin dashboard
 @app.route("/viewcustomerservicerequests/<int:id>/accept", methods=["GET", "POST"])
 def accept_customer_service_requests(id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
   service.service_status="accepted"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/admindashboard")
 
-#Route to reject service professional's registration request from admin dashboard
+#Reject customer's home service request from admin dashboard
 @app.route("/viewcustomerservicerequests/<int:id>/reject", methods=["GET", "POST"])
 def reject_customer_service_requests(id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
   service.service_status="rejected"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/admindashboard")
 
-#Route to close customer service request
+#Close customer's home service request from admin dashboard
 @app.route("/viewcustomerservicerequests/<int:id>/close", methods=["GET", "POST"])
 def close_customer_service_requests(id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
   service.service_status="closed"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/admindashboard")
 
-# Add service name 
+# Add new home service from admin dashboard 
 @app.route("/addservice", methods=["GET","POST"])
 def add_service():
     if request.method=='POST':
@@ -416,31 +377,45 @@ def add_service():
             return render_template('/new_service.html',msg='"Service exists"')
     return render_template("new_service.html",msg="")
 
+ #Approve(unblock) professional from admin dashboard search
+@app.route("/blockprofessional/<int:id>/approve", methods=["GET", "POST"])
+def block_professional(id):
+  service = User_Info.query.filter_by(id=id).first()
+  service.status="approved"
+  db.session.commit()
+  return redirect("/adminsearch")
+
+# Unblock service professional from admin dashboard search
+@app.route("/blockprofessional/<int:id>/reject", methods=["GET", "POST"])
+def unblock_professional(id):
+  service = User_Info.query.filter_by(id=id).first()
+  service.status="rejected"
+  #db.session.delete(service)
+  db.session.commit()
+  return redirect("/adminsearch")
 
 '''------------------------Customer section----------------------------------'''
 
-#Route for customer dashboard
+#Customer dashboard
 @app.route("/customerdashboard")
 def customer_dashboard():
     name = request.args['customer_name']
     id = request.args['customer_id']
-    
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
-    #customerrequest=Customer_Service_Request.query.filter_by(customer_id=id).first()
+    #user=User_Info.query.all()
+    #servname=Service_Info.query.all()
     customer_service_request=Customer_Service_Request.query.all()
-    #service=Service_Info.query.all()
-    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request)
+    #return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,user=user,servname=servname)
+    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,name=name)
 
-#Route for customer dashboard
+#Go back to customer dashboard
 @app.route("/customerdashboard/<int:id>")
 def customer_dashboard1(id):
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
-    #customerrequest=Customer_Service_Request.query.filter_by(customer_id=id).first()
     customer_service_request=Customer_Service_Request.query.all()
-    #service=Service_Info.query.all()
     return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request)
 
-#Route to approve service professional's registration request from admin dashboard
+#View customer's prfile from customer dashboard
 @app.route("/viewcustomerprofile/<int:id>", methods=["GET", "POST"])
 def view_customer_profile(id):
   professional_id=id
@@ -448,7 +423,7 @@ def view_customer_profile(id):
   return render_template ("view_customer_profile.html",service=service,customer_id_id=id)
 
 
-# Edit customer's profile
+# Edit customer's profile from customer dashboard
 @app.route("/viewcustomerprofile/<int:id>/edit", methods=["GET", "POST"])
 def view_customer_profile_edit(id):
   customer_id=id
@@ -461,15 +436,11 @@ def view_customer_profile_edit(id):
 @app.route("/customerprofileupdate/<int:customer_id>", methods=["GET","POST"])
 def customer_profile_update(customer_id):
     if request.method =="POST":
-        #age=int(id)
         ids=customer_id
         email=request.form.get("c_email")
         pwd=request.form.get("c_password")
         full_name=request.form.get("c_fullname")
         phone_number=request.form.get("c_phone")
-        #user_name=request.form.get("s_email")
-        #service_name=request.form.get("ps_name")
-        #experience=request.form.get("s_exp")
         add=request.form.get("c_address")
         location=request.form.get("customer_location")
         pincode=request.form.get("c_pincode")
@@ -478,8 +449,6 @@ def customer_profile_update(customer_id):
         prfser.pwd=pwd
         prfser.full_name=full_name
         prfser.user_name=email
-        #prfser.service_name="customer"
-        #prfser.exp=0
         prfser.add=add
         prfser.pincode=pincode
         prfser.location=location
@@ -490,13 +459,12 @@ def customer_profile_update(customer_id):
     
     
 
-#Different services
+#Links to book different services from customer dashboard
 @app.route("/cleaning/<customer_id>",methods=["GET","POST"])
 def home_cleaning(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="cleaning"
-    #servicename=db.session.query(Service_Info).filter(service_type="cleaning").all()
     servicename=Service_Info.query.all()
     return render_template("service_cleaning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
@@ -505,9 +473,8 @@ def home_carpainter(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="carpainter"
-    #servicename=db.session.query(Service_Info).filter(service_type="cleaning").all()
     servicename=Service_Info.query.all()
-    return render_template("service_carpainter.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_carpainter.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
 @app.route("/plumbing/<customer_id>",methods=["GET","POST"])
 def home_plumbing(customer_id):
@@ -515,68 +482,46 @@ def home_plumbing(customer_id):
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="plumbing"
     servicename=Service_Info.query.all()
-    return render_template("service_plumbing.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_plumbing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
 @app.route("/acservicing/<customer_id>",methods=["GET","POST"])
 def home_acservicing(customer_id):
     ustomer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_acservicing.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_acservicing.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
 @app.route("/painting/<customer_id>",methods=["GET","POST"])
-def home_painting(customer_id):
-    #return render_template("service_painting.html")    
+def home_painting(customer_id):   
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     stype="plumbing"
     servicename=Service_Info.query.all()
-    return render_template("service_painting.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_painting.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
 @app.route("/gardening/<customer_id>",methods=["GET","POST"])
 def home_gardening(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_gardening.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_gardening.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
 
-@app.route("/salooning/<customer_id>",methods=["GET","POST"])
-def home_saloon(customer_id):
+@app.route("/saloning/<customer_id>",methods=["GET","POST"])
+def home_saloning(customer_id):
     customer_id=customer_id
     customer_name=User_Info.query.filter_by(id=customer_id).first()
     servicename=Service_Info.query.all()
-    return render_template("service_salooning.html",servicename=servicename,customer_name=customer_name.full_name)
+    return render_template("service_saloning.html",servicename=servicename,customer_name=customer_name.full_name,customer_id=customer_id)
  
- #Route to approve service professional's registration request from admin dashboard
-@app.route("/blockprofessional/<int:id>/approve", methods=["GET", "POST"])
-def block_professional(id):
-  service = User_Info.query.filter_by(id=id).first()
-  service.status="approved"
-  #db.session.delete(service)
-  db.session.commit()
-  return redirect("/adminsearch")
 
-# Unblock service professional
-@app.route("/blockprofessional/<int:id>/reject", methods=["GET", "POST"])
-def unblock_professional(id):
-  service = User_Info.query.filter_by(id=id).first()
-  service.status="rejected"
-  #db.session.delete(service)
-  db.session.commit()
-  return redirect("/adminsearch")
-
-#Book service
+#Book home service from customer dashboard
 @app.route("/bookservice/<int:id>/<int:customer_id>")
 def book_service(id,customer_id):
-    #now=datetime.now()
-    #timestamp = datetime.timestamp(now)
     serviceid=id
     customerid=customer_id
     professionalid=9
     customer_name="ABC"
     usr=User_Info.query.filter_by(id=customerid).first()
-    #dateofrequested=date.today()
-    #dateofcompletion=date.today()
     dateofrequested=date.today()
     dateofcompletion=date.today()
     servicestatus="requested"
@@ -584,11 +529,109 @@ def book_service(id,customer_id):
     new_service=Customer_Service_Request(service_id=serviceid,customer_id=customerid,professional_id=professionalid,date_of_request=dateofrequested,date_of_completion=dateofcompletion,service_status=servicestatus,remarks=remarks,location=usr.location,ratings=remarks)
     db.session.add(new_service)
     db.session.commit()
-    return redirect("/login")
+    return redirect(url_for(".customer_dashboard1",id=customer_id))
+
+#Customer's summary reports (pie/bar charts) customer dashboard   
+@app.route("/customersummary/<int:customer_id>", methods=["GET","POST"])
+def customer_summary(customer_id):
+    usr=User_Info.query.filter_by(id=customer_id).first()
+    path=os.path.join('static', 'images', 'customer_plot_pie.png')
+    if os.path.exists("path"):
+        os.remove(path)
+    #customer_plot_graph('pie',customer_id)
+    customer_plot_graph('bar',customer_id)
+    return render_template("customer_summary.html",customer_name=usr.full_name,customer_id=customer_id)
+
+def customer_plot_graph(abc,customer_id):
+    cservice=Customer_Service_Request.query.filter_by(customer_id=customer_id).all()
+    barlabels = ["Requested","Accepted","Closed","Rejected"]
+    #pielabels=["Poor","Average","Excellent"]
+    D={'Requested': 0,'Accepted':0,'Closed': 0,'Rejected': 0}
+    D1={"Poor":0,"Average":0,"Excellent":0}
+    if abc=="bar":
+        for entry in cservice:
+                if entry.service_status =="requested":
+                    D['Requested']+=1
+                elif entry.service_status=="accepted":
+                    D['Accepted']+=1
+                elif entry.service_status=="closed":
+                    D['Closed']+=1
+                else:
+                    D['Rejected']+=1
+        data=list(D.values())
+        color = ['blue','green', 'purple','red']
+        plt.bar(barlabels,data,color=color)
+        plt.xlabel("STATUS FOR THE SERVICE REQUESTS",color="red")
+        plt.ylabel("COUNTS",color="red")
+        plt.savefig('static/images/customer_plot_bar.png')
+        return plt.show()
+    elif abc=="pie":
+        for entry in cservice:
+                if entry.ratings=="poor":
+                    D1['Poor']+=1
+                elif entry.ratings=="average":
+                    D1['Average']+=1
+                else:
+                    D1['Excellent']+=1
+                        
+        data1=list(D1.values())
+        explode=(0.02,0.02,0.02)
+        plt.pie(data1,labels=pielabels,autopct='%1.1f%%',explode=explode)
+        plt.legend(loc='lower right')
+        plt.savefig('static/images/customer_plot_pie.png')
+        return plt.show()
+
+#Searching from customer dashboard
+@app.route("/customersearch/<int:customer_id>",methods=["GET","POST"])
+def customer_search(customer_id):
+    servname=Service_Info.query.all()
+    crequests=Customer_Service_Request.query.all()
+    if request.method=="POST":
+        searchby=request.form.get("c_name")
+        searchtext=request.form.get("c_text")
+        servname=Service_Info.query.all()
+        if searchby=="option1" and searchtext=="cleaning":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            #return render_template("service_cleaning.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,customer_id=customer_id)
+            return redirect(url_for(".home_cleaning",customer_id=customer_id))
+        elif searchby=="option1" and searchtext=="carpainter":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_carpainter",customer_id=customer_id))
+        elif searchby=="option1" and searchtext=="plumbing":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_plumbing",customer_id=customer_id))
+        elif searchby=="soption1" and searchtext=="acservicing":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_acservicing",customer_id=customer_id))
+        elif searchby=="option1" and searchtext=="painting":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_painting",customer_id=customer_id))
+        elif searchby=="option1" and searchtext=="gardening":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_gardening",customer_id=customer_id))
+        elif searchby=="option1" and searchtext=="saloning":
+            servname=Service_Info.query.all()
+            username=User_Info.query.all()
+            crequests=Customer_Service_Request.query.all()
+            return redirect(url_for(".home_saloning",customer_id=customer_id))  
+    return render_template("customer_search.html",crequests=crequests,customer_id=customer_id)
+
     
 '''---------------------Professional section---------------------------'''
 
-#Route for professional dashboard
+#Professional dashboard
 @app.route("/professionaldashboard/")
 def professional_dashboard():
     name = request.args['professional_name']
@@ -598,29 +641,23 @@ def professional_dashboard():
     user=User_Info.query.all()
     return render_template("professional_dashboard.html",professional_name=name,professional_id=id,cservice=cservice,professional_location=usr.location,user=user)
 
-#Route for professional dashboard
-#@app.route("/professionaldashboard1/<int:professional_id>/<int:id>")
+#Go back to professional dashboard
 @app.route("/professionaldashboard/<int:professional_id>")
 def professional_dashboard1(professional_id):
-    #name = "ABC"
     cservice=Customer_Service_Request.query.all()
     usr=User_Info.query.filter_by(id=professional_id).first()
     user=User_Info.query.all()
     name=usr.full_name
     return render_template("professional_dashboard.html",professional_name=name,professional_id=professional_id,cservice=cservice,professional_location=usr.location,user=user)
 
-#Route to approve service professional's registration request from admin dashboard
+#View service professional's profile from professional dashboard
 @app.route("/viewprofessionalprofile/<int:id>", methods=["GET", "POST"])
 def view_professional_profile(id):
   professional_id=id
   service = User_Info.query.filter_by(id=id).first()
   return render_template ("view_professional_profile.html",service=service,professional_id=id)
-  #return redirect("/admindashboard")
   
-  #Route to approve service professional's registration request from admin dashboard
-  ###########################################################################
-  ###########################
-# Edit professional's profile
+# Edit professional's profile from professional dashboard
 @app.route("/viewprofessionalprofile/<int:id>/edit", methods=["GET", "POST"])
 def view_professional_profile_edit(id):
   professional_id=id
@@ -629,19 +666,15 @@ def view_professional_profile_edit(id):
   service = User_Info.query.filter_by(id=id).first()
   user=User_Info.query.all()
   return render_template ("professional_profileedit.html",service=service,professional_id=id,user=user,pservicename=pservicename,servname=servname)
-  #return redirect("/admindashboard")
-# Professionals' profile update
+
+# Professionals' profile update in continuation of above from professional dashboard
 @app.route("/professionalprofileupdate/<int:professional_id>", methods=["GET","POST"])
 def professional_profile_update(professional_id):
-    #pservicename=Service_Info.query.all()
-    #servname=db.session.query(User_Info).with_entities(User_Info.location).filter().distinct().all()
     if request.method =="POST":
-        #age=int(id)
         ids=professional_id
         email=request.form.get("s_email")
         pwd=request.form.get("s_password")
         full_name=request.form.get("s_fullname")
-        #user_name=request.form.get("s_email")
         service_name=request.form.get("ps_name")
         experience=request.form.get("s_exp")
         add=request.form.get("s_address")
@@ -662,56 +695,42 @@ def professional_profile_update(professional_id):
         return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
     
     
-
+# Accept customer's home service request by a professional from professional dahboard
 @app.route("/acceptcustomerservicerequests/<int:professional_id>/<int:id>/accept", methods=["GET", "POST"])
 def accept_customer_service_requests_by_professional(professional_id,id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
-  #user=User_Info.query.all()
-  
   service.service_status="accepted"
   service.professional_id=professional_id
-  #db.session.delete(service)
   db.session.commit()
   return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
 
-#Route to reject service professional's registration request from admin dashboard
+#Reject customer's home service request by a professional from professional dahboard
 @app.route("/rejectcustomerservicerequests/<int:professional_id>/<int:id>/reject", methods=["GET", "POST"])
 def reject_customer_service_requests_by_professional(professional_id,id):
   service = Customer_Service_Request.query.filter_by(id=id).first()
   service.service_status="rejected"
-  #db.session.delete(service)
   db.session.commit()
   return redirect(url_for(".professional_dashboard1",professional_id=professional_id,id=id))
-  #return redirect("/professionaldashboard")
   
-#Professional's  Summaries   
-
-#######################
-
+#Professional's summary reports (pie/bar charts) professional dashboard   
 @app.route("/professionalsummary/<int:professional_id>", methods=["GET","POST"])
 def professional_summary(professional_id):
     usr=User_Info.query.filter_by(id=professional_id).first()
-    #cservice=Customer_Service_Request.query.all()
     path=os.path.join('static', 'images', 'prof_plot_pie.png')
     if os.path.exists("path"):
         os.remove(path)
     prof_plot_graph('pie',professional_id)
     prof_plot_graph('bar',professional_id)
     return render_template("professional_summary.html",professional_name=usr.full_name,professional_id=usr.id)
-    #return render_template("professional_summary.html")
 
 def prof_plot_graph(abc,professional_id):
     cservice=Customer_Service_Request.query.filter_by(professional_id=professional_id).all()
-    #barlabels = ["Received","Accepted","Closed","Rejected"]
     barlabels = ["Received","Accepted","Closed","Rejected"]
     pielabels=["Poor","Average","Excellent"]
-    #for entry in cservice:
-     #   if entry["professional_id"]==professional_id:
     D={'Received': 0,'Accepted':0,'Closed': 0,'Rejected': 0}
     D1={"Poor":0,"Average":0,"Excellent":0}
     if abc=="bar":
         for entry in cservice:
-            #if entry["professional_id"]==professional_id:
                 if entry.service_status =="requested":
                     D['Received']+=1
                 elif entry.service_status=="accepted":
@@ -729,7 +748,6 @@ def prof_plot_graph(abc,professional_id):
         return plt.show()
     elif abc=="pie":
         for entry in cservice:
-        #    if entry["professional_id"]==professional_id:
                 if entry.ratings=="poor":
                     D1['Poor']+=1
                 elif entry.ratings=="average":
@@ -745,13 +763,12 @@ def prof_plot_graph(abc,professional_id):
         return plt.show()
 
 
-#@app.route("/professionalsearch")
+#Searching from professional's dashboard
 @app.route("/professionalsearch/<int:professional_id>",methods=["GET","POST"])
 def professional_search(professional_id):
     servname=Service_Info.query.all()
     crequests=Customer_Service_Request.query.all()
     if request.method=="POST":
-        #name = request.args['admin_name']
         searchby=request.form.get("p_name")
         searchtext=request.form.get("p_text")
         servname=Service_Info.query.all()
@@ -759,10 +776,8 @@ def professional_search(professional_id):
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            #crequests=Customer_Service_Request.query.filter_by(service_status=searchtext).first()
             return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
         elif searchby=="locations":
-            #name="locations"
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
@@ -771,8 +786,7 @@ def professional_search(professional_id):
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
-    #return render_template("professional_search.html",crequests=crequests,username=username,servname=servname,professional_id=professional_id)   
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)   
     return render_template("professional_search.html",crequests=crequests,professional_id=professional_id)
 
 

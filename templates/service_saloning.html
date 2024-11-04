@@ -103,6 +103,13 @@
             margin-top:20px;
             height:auto;
         }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 2px;
+            color:white;
+            height:25px;
+        }
     </style>
 
 </head>
@@ -112,9 +119,9 @@
             <div class="navdiv">
                 <div class="logo"><h3>Welcome {{customer_name}}(Customer Dashboard)</h3></div>
                 <ul>
-                    <li><a href="#">Home |</a></li>
-                    <li><a href="/customersearch">Search |</a></li>
-                    <li><a href="/customersummary">Summary |</a></li>
+                    <li><a href="/customerdashboard/{{customer_id}}">Home |</a></li>
+                    <li><a href="/customersearch/{{customer_id}}">Search |</a></li>
+                    <li><a href="/customersummary/{{customer_id}}">Summary |</a></li>
                     <li><a href="/login">Logout</a></li>
                 </ul>
                 {{msg}}
@@ -123,7 +130,7 @@
     </div>
     <div id="main">
         <div id="dv1">
-            <h2>Best Salooning Packages</h2>
+            <h2>Best Saloning Packages</h2>
             <table>
                 <thead>
                     <tr>
@@ -136,13 +143,13 @@
                 </thead>
                 <tbody>
                     {% for entry in servicename%}
-                    {% if entry.service_type=="salooning" %}
+                    {% if entry.service_type=="saloning" %}
                     <tr>
                         <td>{{entry.id}}</td>
                         <td>{{entry.servicename}}</td>
                         <td>{{entry.baseprice}}</td>
                         <td>{{entry.service_type}}</td>
-                        <td><button>Book</button></td>
+                        <td><button class="btn1"><a class="a1" href="/bookservice/{{entry.id}}/{{customer_id}}">Book</a></button></td>
                     </tr>
                     {% endif %}
                     {% endfor %}
