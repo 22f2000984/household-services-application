@@ -414,24 +414,24 @@ def unblock_professional(id):
 #Customer dashboard
 @app.route("/customerdashboard")
 def customer_dashboard():
-    name = request.args['customer_name']
+    #name = request.args['customer_name']
     id = request.args['customer_id']
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
-    user=User_Info.query.filter_by(id=id).first()
-    #servname=Service_Info.query.all()
-    customer_location=user.location
+    servname=Service_Info.query.all()
     customer_service_request=Customer_Service_Request.query.all()
-    #return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,user=user,servname=servname)
-    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,name=user.full_name,customer_location=customer_location)
+    user=User_Info.query.filter_by(id=id).first()
+    customer_location=user.location
+    return render_template("customer_dashboard.html",service=service,servname=servname,customer_id=id,customer_service_request=customer_service_request,name=user.full_name,customer_location=customer_location,customer_name=user.full_name)
 
-#Go back to customer dashboard
+#Go back to customer dashboard 
 @app.route("/customerdashboard/<int:id>")
 def customer_dashboard1(id):
     service=db.session.query(Service_Info).with_entities(Service_Info.service_type).filter().distinct().all()
+    servname=Service_Info.query.all()
     customer_service_request=Customer_Service_Request.query.all()
     user=User_Info.query.filter_by(id=id).first()
     customer_location=user.location
-    return render_template("customer_dashboard.html",service=service,customer_id=id,customer_service_request=customer_service_request,customer_location=customer_location)
+    return render_template("customer_dashboard.html",service=service,servname=servname,customer_id=id,customer_service_request=customer_service_request,name=user.full_name,customer_location=customer_location,customer_name=user.full_name)
 
 #View customer's prfile from customer dashboard
 @app.route("/viewcustomerprofile/<int:id>", methods=["GET", "POST"])
@@ -559,6 +559,54 @@ def book_service(id,customer_id):
     db.session.commit()
     return redirect(url_for(".customer_dashboard1",id=customer_id))
 
+#close home service from customer dashboard
+@app.route("/customercloseservice/<int:id>/<int:customer_id>")
+def customer_close_service(id,customer_id):
+    #service = Customer_Service_Request.query.filter_by(id=id).first()
+    #service.service_status="closed"
+    #db.session.commit()
+    #return redirect(url_for(".customer_dashboard1",id=customer_id))
+    return render_template("customer_update_servicerequest.html",id=id,customer_id=customer_id)
+
+# In continution to close ther service..
+@app.route("/customerupdateservice/<int:id>/<int:customer_id>", methods=["GET","POST"])
+def customer_update_service(id,customer_id):
+    if request.method =="POST":
+        id=id
+        ids=customer_id
+        customer_id=customer_id
+        servicestatus=request.form.get("service_status")
+        servicerating=request.form.get("service_rating")
+        serviceremark=request.form.get("service_remark")
+        service = Customer_Service_Request.query.filter_by(id=id).first()
+        service.service_status=servicestatus
+        service.remarks=serviceremark
+        service.ratings=servicerating
+        db.session.commit()
+        return redirect(url_for(".customer_dashboard1",id=customer_id))
+
+# Edit home service from customer dashboard 
+@app.route("/customereditservice/<int:id>/<int:customer_id>")
+def customer_edit_service(id,customer_id):
+    return render_template("customer_edit_servicerequest.html",id=id,customer_id=customer_id)
+
+# In continution to edit home service..
+@app.route("/customerupdateeditservice/<int:id>/<int:customer_id>", methods=["GET","POST"])
+def customer_update_edit_service(id,customer_id):
+    if request.method =="POST":
+        id=id
+        ids=customer_id
+        customer_id=customer_id
+        servicestatus=request.form.get("service_status")
+        servicedor=request.form.get("service_dor")
+        serviceremark=request.form.get("service_remark")
+        service = Customer_Service_Request.query.filter_by(id=id).first()
+        service.service_status=servicestatus
+        service.remarks=serviceremark
+        service.date_of_completion=servicedor
+        db.session.commit()
+        return redirect(url_for(".customer_dashboard1",id=customer_id))
+    
 #Customer's summary reports (pie/bar charts) customer dashboard   
 @app.route("/customersummary/<int:customer_id>", methods=["GET","POST"])
 def customer_summary(customer_id):
@@ -661,6 +709,15 @@ def customer_search(customer_id):
             crequests=Customer_Service_Request.query.all()
             #return redirect(url_for(".location_servicing",customer_id=customer_id,srchtxt=searchtext)) 
             return render_template("location_servicing.html",servicename=servicename,customer_id=customer_id,searchtext=searchtext)
+        elif searchby=="option3":
+            searchtext=searchtext
+            servicename=Service_Info.query.all()
+            username=User_Info.query.all()
+            un=User_Info.query.filter_by(pincode=searchtext).first()
+            location=un.location
+            crequests=Customer_Service_Request.query.all()
+            #return redirect(url_for(".location_servicing",customer_id=customer_id,srchtxt=searchtext)) 
+            return render_template("pincode_servicing.html",servicename=servicename,customer_id=customer_id,searchtext=searchtext,location=location)
     return render_template("customer_search.html",crequests=crequests,customer_id=customer_id)
 
     
@@ -684,6 +741,32 @@ def professional_dashboard1(professional_id):
     user=User_Info.query.all()
     name=usr.full_name
     return render_template("professional_dashboard.html",professional_name=name,professional_id=professional_id,cservice=cservice,professional_location=usr.location,user=user)
+
+#close home service from professional dashboard
+@app.route("/professionalcloseservice/<int:id>/<int:professional_id>")
+def professional_close_service(id,professional_id):
+    #service = Customer_Service_Request.query.filter_by(id=id).first()
+    #service.service_status="closed"
+    #db.session.commit()
+    #return redirect(url_for(".customer_dashboard1",id=customer_id))
+    return render_template("professional_update_servicerequest.html",id=id,professional_id=professional_id)
+
+# In continution to close the service..
+@app.route("/professionalupdateservice/<int:id>/<int:professional_id>", methods=["GET","POST"])
+def professional_update_service(id,professional_id):
+    if request.method =="POST":
+        id=id
+        ids=professional_id
+        professional_id=professional_id
+        servicestatus=request.form.get("service_status")
+        servicerating=request.form.get("service_rating")
+        serviceremark=request.form.get("service_remark")
+        service = Customer_Service_Request.query.filter_by(id=id).first()
+        service.service_status=servicestatus
+        service.remarks=serviceremark
+        service.ratings=servicerating
+        db.session.commit()
+        return redirect(url_for(".professional_dashboard1",professional_id=professional_id))
 
 #View service professional's profile from professional dashboard
 @app.route("/viewprofessionalprofile/<int:id>", methods=["GET", "POST"])
@@ -811,17 +894,25 @@ def professional_search(professional_id):
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
+            cr=Customer_Service_Request.query.filter_by(professional_id=professional_id)
+            customer_id=cr.customer_id
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id)
         elif searchby=="option2":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)
+            un=User_Info.query.filter_by(id=professional_id).first()
+            prof_name=un.full_name
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,prof_name=prof_name)
         elif searchby=="option3":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
+            un=User_Info.query.filter_by(id=professional_id).first()
+            prof_name=un.full_name
             crequests=Customer_Service_Request.query.all()
-            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id)   
+            cr=Customer_Service_Request.query.filter_by(professional_id=professional_id).first()
+            customer_id=cr.customer_id
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id,prof_name=prof_name)   
     return render_template("professional_search.html",crequests=crequests,professional_id=professional_id)
 
 

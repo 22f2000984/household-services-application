@@ -70,13 +70,18 @@
             background-color: gray;
             text-decoration: none;
             font-size:20px;
-
-
+        }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color:white;
+            height:20px;
         }
         a {
             font-style: italic;
             color: white;
-            font-size: 20px;
+            font-size: 14px;
         }
         h1,h2 {
             font-style: italic;
@@ -86,7 +91,7 @@
         table, th, td{
             text-align: center;
             font-style: italic;
-            width:900px;
+            width:1070px;
             margin-left: 80px;
             border-radius: 20px;
             border: 1px solid black;
@@ -158,29 +163,35 @@
         </div>
         <div class="table">
             <br>
-            <h2 style="font-style:italic;color:blue">Customer's history for the services availed</h2>
+            <h3 style="font-style:italic;color:blue">Service History: </h3>
             <table>
                 <thead id="th">
                     <tr>
                         <th>ID</th>
-                        <th>Service Name</th>
-                        <th>Professional Name</th>
+                        <th style="width:1500px;">Service Name</th>
                         <th>Customer Name </th>
+                        <th>Professional Name</th>
                         <th>Phone No</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for entry in customer_service_request %}
                     {% if entry.customer_id == customer_id %}
+                    {% for ser in servname %}
+                    {% if ser.id==entry.service_id %}
                     <tr>
                         <td>{{entry.id}}</td>
-                        <td>{{entry.service_id}}</td>
+                        <td style="width:1500px;">{{ser.servicename}}</td>
+                        <td>{{customer_name}}</td>
                         <td>{{entry.professional_id}}</td>
-                        <td>{{entry.customer_id}}</td>
                         <td>98700005</td>
                         <td>{{entry.service_status}}</td>
+                        <td><button class="btn1"><a class="a1" href="/customercloseservice/{{entry.id}}/{{customer_id}}">Close it ?</a></button> / <button class="btn1"><a class="a1" href="/customereditservice/{{entry.id}}/{{customer_id}}">Edit</a></button></td>
                     </tr>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                     {% endfor %}
                 </tbody>

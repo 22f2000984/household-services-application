@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Search Page</title>
+    <style>
+        * {
+            text-decoration: none;
+        }
+        .navbar {
+            background-color: lightblue;
+            padding-right: 15px;
+            padding-left: 15px;
+            border-radius: 5px;
+        }
+        ul li{
+            vertical-align: middle;            
+        }
+        .navdiv {
+            display:flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 18px;
+            color: red;
+            font-style: italic;
+        }
+        li {
+            list-style: none;
+            display: inline;
+        }
+        li a {
+            color: green;
+            font-size: 16px;
+            font-style: italic;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        .div1 {
+            border: 1px;
+            border-radius: 20px;
+            background-color: bisque;
+            margin-top: 30px;
+            text-align: center;
+            margin-left: auto;
+            margin-top: 10px;
+            width:auto;
+            height: auto;
+        }
+        p {
+            text-align: center;
+            font-size: 25px;
+            font-style: italic;
+            color: red;
+        }
+        .button:hover {
+            background-color: lightblue;
+        }
+        .button {
+            transition-duration: 0.4s;
+            margin-top: 40px;
+            margin-left: 5px;
+            padding: 1px 6px;
+            border: 1px outset buttonborder;
+            border-radius: 10px;
+            height: 130px;
+            color: white;
+            background-color: gray;
+            text-decoration: none;
+            font-size:20px;
+
+
+        }
+        a {
+            font-style: italic;
+            color: white;
+            font-size: 20px;
+        }
+        h2 {
+            font-style: italic;
+            color:blue;
+            margin-left: 500px;
+            font-size: 20px;
+        }
+        
+        table, th, td {
+            text-align: center;
+            font-style: italic;
+            width:1000px;
+            margin-left: 50px;
+            border-radius: 20px;
+            border: 1px solid black;
+            border-collapse: collapse ;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #dv1 {
+            border:1px solid black;
+            border-radius:5px;
+            background-color:white;
+            margin-top:20px;
+            height:auto;
+        }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 2px;
+            color:white;
+            height:25px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="header">
+        <nav class="navbar">
+            <div class="navdiv">
+                <div class="logo"><h3>Welcome {{customer_name}}(Customer Dashboard)</h3></div>
+                <ul>
+                    <li><a href="/customerdashboard/{{customer_id}}">Home |</a></li>
+                    <li><a href="/customersearch/{{customer_id}}">Search |</a></li>
+                    <li><a href="/customersummary/{{customer_id}}">Summary |</a></li>
+                    <li><a href="/login">Logout</a></li>
+                </ul>
+                {{msg}}
+            </div>
+        </nav>
+    </div>
+    <div id="main">
+        <div id="dv1">
+            <h2>Best Servicing Packages at {{location}} (Pincode-{{searchtext}})</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Service Name</th>
+                        <th>Base Price</th>
+                        <th>Service Type</th>
+                        <th>Location</th>
+                        <th>Book the Service</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in servicename %}
+                    {% if entry.city==location%}
+                    <tr>
+                        <td>{{entry.id}}</td>
+                        <td>{{entry.servicename}}</td>
+                        <td>{{entry.baseprice}}</td>
+                        <td>{{entry.service_type}}</td>
+                        <td>{{entry.city}}</td>
+                        <td><button class="btn1"><a class="a1" href="/bookservice/{{entry.id}}/{{customer_id}}">Book</a></button></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="footer">
+
+    </div>
+    
+</body>
+</html>

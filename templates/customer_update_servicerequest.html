@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Update Service</title>
+    <style>
+        body {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1px;
+        }
+        h1 {
+            text-align: center;
+            color: red;
+            font-style: italic;
+        }
+        h4 {
+            text-align: center;
+            color: green;
+            font-style: italic;
+        }
+        label {
+            width:200px;
+            display:inline-block;
+            margin:10px;
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 500;
+            }
+        #form {
+            text-align: center;
+            border-radius:10px;
+            background-color:lightblue ;
+            width: 500px;
+            height: 382px;
+            align-items: center;
+            margin-inline: auto;
+        }
+        button {
+            border-radius: 5px;
+            margin-left: 10px;
+            background-color: grey;
+            color: white;
+            font-size: 18px;
+        }
+        a.button {
+            padding: 1px 6px;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color: white;
+            background-color: grey;
+            text-decoration: none;
+            font-size:20px
+        }
+        #drp {
+            margin-left:-50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+
+    </div>
+    <div id="main">
+        <form action="/customerupdateservice/{{id}}/{{customer_id}}" id="form" method="POST">
+            <br>
+            <h1>Close Service Request</h1>
+            <h4>Home Service Id - {{id}}</h4>
+            <div></div>
+            <div>
+                <label for="service_status">Service Status:</label>
+                <input type="text" id="service_status" name="service_status" placeholder=" enter closed">
+            </div>
+            <div>
+                <label for="service_rating">Ratings:</label>
+                <input type="text" id="service_rating" name="service_rating" placeholder="poor, average, excellent">
+            </div>
+            <div>
+                <label for="service_remark">Remarks:</label>
+                <textarea id="service_remark" name="service_remark" row="8" cols="21"></textarea>
+            </div>
+            <div>
+                <button type="submit" value="add">Update</button>
+                <a href="/customerdashboard/{{customer_id}}" class="button">Cancel</a>
+            </div>
+            <div>{{msg}}</div>
+
+        </form>
+
+
+    </div>
+    <div id="footer">
+
+    </div>
+
+</body>
+</html>

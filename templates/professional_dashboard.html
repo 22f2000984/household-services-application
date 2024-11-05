@@ -41,7 +41,7 @@
         table ,th, td {
             text-align: center;
             font-style: italic;
-            width:900px;
+            width:1050px;
             margin-left: 50px;
             border-radius: 10px;
             border-color: blue;
@@ -74,6 +74,13 @@
             background-color: gray;
             text-decoration: none;
             font-size:18px
+        }
+        .btn1 {
+            background:gray;
+            border: 1px outset buttonborder;
+            border-radius: 5px;
+            color:white;
+            height:20px;
         }
 
     </style>
@@ -162,7 +169,8 @@
                         <td>{{entry.location}}</td>
                         <td>{{entry.service_status}}</td>
                         <td>
-                            <a href="/rejectcustomerservicerequests/{{professional_id}}/{{entry.id}}/reject">Reject</a>
+                            <!--a href="/rejectcustomerservicerequests/{{professional_id}}/{{entry.id}}/reject">Reject</a-->
+                            <button class="btn1"><a style="font-style:italic;color:white;font-size:14px;" class="a1" href="/rejectcustomerservicerequests/{{professional_id}}/{{entry.id}}/reject">Reject</a></button> / <button class="btn1"><a class="a1" style="font-style:italic;color:white;font-size:14px;" href="/professionalcloseservice/{{entry.id}}/{{professional_id}}">Close it ?</a></button>
                         </td>
                     </tr>
                     {% endif %}
@@ -206,7 +214,41 @@
                 </tbody>
             </table>
         </div>
-
+        <div id="todayservicerequests">
+            <h2>Today's New Service Requests (Location-All)</h2>
+            <table id="today_service-request">
+                <thead id="th">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone Number</th>
+                        <th>Location(Pincode)</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="td">
+                    {% for entry in cservice%}
+                    {% if  (entry.service_status=="requested" or entry.service_status=="rejected")%}
+                    {% for us in user %}
+                    <!--{%if entry.customer_id==us.id%} -->
+                    <tr>
+                        <td>{{entry["id"]}}</td>
+                        <td>{{us.full_name}}</td>
+                        <td>{{us.phone_number}}</td>
+                        <td>{{entry.location}}</td>
+                        <td>{{entry.service_status}}</td>
+                        <td>
+                            <a href="/acceptcustomerservicerequests/{{professional_id}}/{{entry.id}}/accept">Accept</a>
+                        </td>
+                    </tr>
+                    <!--{% endif %} -->
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     <div id="footer">
 
