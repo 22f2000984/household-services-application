@@ -381,15 +381,6 @@ def add_service():
         db.session.add(new_service)
         db.session.commit()
         return redirect("/admindashboard")
-        '''
-        if not service and not location:
-            new_service=Service_Info(servicename=servicename,description=description,baseprice=baseprice,time_required=timerequired,service_type=servicetype,city=city)
-            db.session.add(new_service)
-            db.session.commit()
-            return redirect("/admindashboard")
-        elif service:
-            return render_template('/new_service.html',msg='"Service exists"')
-        '''
     return render_template("new_service.html",msg="")
 
  #Approve(unblock) professional from admin dashboard search
@@ -405,7 +396,6 @@ def block_professional(id):
 def unblock_professional(id):
   service = User_Info.query.filter_by(id=id).first()
   service.status="rejected"
-  #db.session.delete(service)
   db.session.commit()
   return redirect("/adminsearch")
 
@@ -535,7 +525,6 @@ def home_saloning(customer_id):
 
 @app.route("/location/<int:customer_id>/searchtext",methods=["GET","POST"])
 def location_servicing(customer_id,searchtext):
-    #return "searchtext"
     customer_id=customer_id
     searchtext=searchtext
     customer_name=User_Info.query.filter_by(id=customer_id).first()
@@ -880,7 +869,7 @@ def prof_plot_graph(abc,professional_id):
         plt.savefig('static/images/prof_plot_pie.png')
         return plt.show()
 
-
+import json
 #Searching from professional's dashboard
 @app.route("/professionalsearch/<int:professional_id>",methods=["GET","POST"])
 def professional_search(professional_id):
@@ -894,9 +883,22 @@ def professional_search(professional_id):
             servname=Service_Info.query.all()
             username=User_Info.query.all()
             crequests=Customer_Service_Request.query.all()
-            cr=Customer_Service_Request.query.filter_by(professional_id=professional_id)
+            cr=Customer_Service_Request.query.filter_by(professional_id=professional_id).first()
+            dtlist=db.session.query(Customer_Service_Request).with_entities(Customer_Service_Request.date_of_request).filter().distinct().all()
+            #loclist=db.session.query(Service_Info).with_entities(Service_Info.city).filter().distinct().all()
+            #pinlist=db.session.query(User_Info).with_entities(User_Info.pincode).filter().distinct().all()
             customer_id=cr.customer_id
-            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id)
+            datelist=[]
+            for dt in dtlist:
+                datelist.append(dt[0])
+            #locationlist=[]
+            #for dt in loclist:
+            #    locationlist.append(dt[0]) 
+            #pincodelist=[]
+            #for dt in pinlist:
+            #    pincodelist.append(dt[0]) 
+            #return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id,datelist=datelist,pincodelist=pincodelist,locationlist=locationlist)
+            return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id,datelist=datelist)
         elif searchby=="option2":
             servname=Service_Info.query.all()
             username=User_Info.query.all()
@@ -914,6 +916,7 @@ def professional_search(professional_id):
             customer_id=cr.customer_id
             return render_template("professional_search.html",crequests=crequests,searchby=searchby,searchtext=searchtext,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id,prof_name=prof_name)   
     return render_template("professional_search.html",crequests=crequests,professional_id=professional_id)
+    #return render_template("professional_search.html",crequests=crequests,username=username,servname=servname,professional_id=professional_id,customer_id=customer_id,datelist=datelist,pincodelist=pincodelist,locationlist=locationlist)
 
 
     

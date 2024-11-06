@@ -99,12 +99,13 @@
                 </select>
                 <button type="submit" btn btn-primary data-bs-toggle="tooltip" data-bs-placement="left" title="Click to search">Search</button>
             </div>
-            <script>
+           
+            <script>;
                 const dropdown1 = document.getElementById("dropdown1");
                 const dropdown2 = document.getElementById("dropdown2");
-        
+ 
                 const optionsMap = {
-                option1: [],
+                option1: {{datelist|safe}},
                 option2: ["Delhi", "Mumbai", "Chennai", "Kolkata", "Gurgaon", "Noida", "Greater Noida", "Bengaluru"],
                 option3: ["110001", "122001", "201301", "201009", "400001", "600001", "700001", "560001"],
                 };
@@ -128,7 +129,11 @@
         </form>
         {% if searchby=="option1" %}
         <div>
+
             <h2 style="font-style:italic;color:blrown">Search Results (based on date)</h2>
+           <!-- {% for d in datelist%}
+            {{d}}
+            {%endfor%} -->
             <table id = "professionals-table">
                 <thead id="th">
                     <tr>
@@ -145,7 +150,7 @@
                     {% for entry in crequests %}
                     {% if entry.date_of_request==searchtext and entry.professional_id==professional_id %}
                     {% for usr in username %}
-                    {%if entry.customer_id==usr.id %}
+                    {% if entry["customer_id"]==usr.id %}
                     <tr>
                         <td><a href="#">{{entry["id"]}}<a/></td>
                         <td>{{usr["full_name"]}}</td>
@@ -165,7 +170,7 @@
     {% elif searchby== "option2" %}
         <div>
             <h2 style="font-style:italic;color:brown;">Service requested completed by professional (based on location)</h2>
-            {{searchtext}}, {{professional_id}}, {{searchby}}
+
             <table id = "location-table">
                 <thead id="th">
                     <tr>
